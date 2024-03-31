@@ -1,0 +1,43 @@
+<div class="board" cdkDropListGroup>
+    <div
+      class="cell"
+      *ngFor="let cell of board; let i = index"
+      cdkDropList
+      (cdkDropListDropped)="drop($event)"
+      [cdkDropListData]="i"
+      [cdkDropListEnterPredicate]="enterPredicate"
+    >
+      <img
+      cdkDrag
+      [src]="cell.src"
+      width="30px"
+      height="30px"
+      *ngIf="cell.number === 1"
+      class="layer-image"
+      />
+    </div>
+  </div>
+  
+  <div class="mountain-container">
+    <img
+      src="/assets/mountain.svg"
+      width="330px"
+      height="390px"
+      [style.left.px]="400"
+      [style.top.px]="0"
+      class="mountain-image"
+    />
+  </div>
+  <div class="sand-container">
+  <!-- Repeat sand images for each cell -->
+  <div class="sand-cell" *ngFor="let cell of board; let i = index">
+    <img
+      src="/assets/sand.svg"
+      width="30px"
+      height="30px"
+      [style.width.px]="30"
+      [style.height.px]="30"
+    >
+  </div>
+</div>
+  
