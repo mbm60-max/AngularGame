@@ -9,10 +9,10 @@
     >
       <img
       cdkDrag
-      [src]="cell.src"
+      [src]=currentPath(i)
       width="30px"
       height="30px"
-      *ngIf="cell.number === 1"
+      *ngIf="cell === 1"
       class="layer-image"
       />
     </div>

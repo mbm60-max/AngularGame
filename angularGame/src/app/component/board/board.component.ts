@@ -2,8 +2,9 @@ import { Component } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
 interface Cell {
-  number: number;
+  index: number;
   src: string;
+  isOccupied:boolean;
 }
 
 @Component({
@@ -14,26 +15,32 @@ interface Cell {
   styleUrls: ['./board.component.scss'],
 })
 export class BoardComponent {
-  board: Cell[] = Array(720).fill({ number: 0, src: '' });
-
+  board: number[] = Array(720).fill(0);
+  virtualBoard: Cell[] = Array.from({ length: 720 }, (_, index) => ({
+    index: index,
+    src: '',
+    isOccupied: false
+  }));
+  
   constructor() {
-    this.board[0] = { number: 1, src: '/assets/soldier.svg' };
-    this.board[2] = { number: 1, src: '/assets/soldier.svg' };
+    this.board[0] = 1;
+    this.board[2] = 1;
+    this.virtualBoard[0]={index:0,src:"/assets/soldier.svg",isOccupied:true}
+    this.virtualBoard[2]={index:2,src:"/assets/soldier.svg",isOccupied:true}
   }
-
+  currentPath(index: number): string {
+    // Example logic to generate the path based on the index
+    return this.virtualBoard[index].src;
+  }
   drop(event: CdkDragDrop<number>) {
-    const previousCell = this.board[event.previousIndex];
-    const currentCell = this.board[event.currentIndex];
-
-    // Update the number and src of the previous and current cells
-    previousCell.number = 0;
-    currentCell.number = 1;
-    console.log(previousCell.src)
-    console.log(currentCell.src)
-    currentCell.src = previousCell.src;
-    previousCell.src = '';
+    const previousIndex =event.previousContainer.data;
+    const newIndex =event.container.data;
+    this.board[previousIndex] = 0;
+    this.board[newIndex] = 1;
+    this.virtualBoard[previousIndex]={index:previousIndex,src:"",isOccupied:false}
+    this.virtualBoard[newIndex]={index:newIndex,src:"/assets/soldier.svg",isOccupied:true}
   }
 
   enterPredicate = (drag: CdkDrag, drop: CdkDropList) =>
-    this.board[drop.data].number === 0;
-}
+    this.board[drop.data] === 0;
+} 

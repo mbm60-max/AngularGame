@@ -1,15 +1,16 @@
 .board {
+    top: 0;
+    left: 0;
     display: grid;
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
     height: 800px;
-    position: relative;
+    position:  absolute;
   }
   
   .cell {
     border: 1px solid #F0F0F6;
-  
   }
   .layer-image {
     margin-left: -1px; /* Adjust left position as needed */
@@ -31,12 +32,7 @@
     position: absolute;
     z-index:-2;
   }
-  
-  .cell img.layer-image {
-    position: relative; /* Ensure soliders render above mountains */
-    z-index: 10; /* Set a higher z-index */
-  }
-  
+
   .mountain-image {
     position: absolute; /* Position the mountain image absolutely */
     z-index: -1; /* Set a lower z-index */
