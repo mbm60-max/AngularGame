@@ -20,11 +20,11 @@
   
   <div class="mountain-container">
     <img
-      src="/assets/mountain.svg"
-      width="330px"
-      height="390px"
-      [style.left.px]="400"
-      [style.top.px]="0"
+      *ngFor="let position of mountainPositions"
+      [src]="position.src"
+      [style.left.px]="position.left"
+      [style.top.px]="position.top"
+      [style.transform]="'rotate(' + position.rotation + 'deg)'"
       class="mountain-image"
     />
   </div>

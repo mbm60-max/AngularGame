@@ -1,6 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CdkDrag, CdkDragDrop, CdkDropList, DragDrop, DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
+import { MapGeneratorService, MountainPosition } from '../../service/map-generator.service';
 interface Cell {
   index: number;
   src: string;
@@ -14,7 +15,9 @@ interface Cell {
   templateUrl: './board.component.html',
   styleUrls: ['./board.component.scss'],
 })
-export class BoardComponent {
+export class BoardComponent implements OnInit{
+  mountainPositions: MountainPosition[]=[];
+
   board: number[] = Array(720).fill(0);
   virtualBoard: Cell[] = Array.from({ length: 720 }, (_, index) => ({
     index: index,
@@ -22,11 +25,15 @@ export class BoardComponent {
     isOccupied: false
   }));
   
-  constructor() {
+  constructor(private mapGeneratorService: MapGeneratorService) {
     this.board[0] = 1;
     this.board[2] = 1;
     this.virtualBoard[0]={index:0,src:"/assets/soldier.svg",isOccupied:true}
     this.virtualBoard[2]={index:2,src:"/assets/soldier.svg",isOccupied:true}
+  }
+  ngOnInit(): void {
+    this.mountainPositions = this.mapGeneratorService.getMountainPositions(5);
+    console.log(this.mountainPositions)
   }
   currentPath(index: number): string {
     // Example logic to generate the path based on the index
