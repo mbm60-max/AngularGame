@@ -1,6 +1,10 @@
-<div>
-    <ul>
-        <li><a href="#">Register</a></li>
-        <li><a href="#">Login</a></li>
-    </ul>
-</div>
+<mat-grid-list cols="4" rowHeight="100px">
+    <mat-grid-tile *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows" [style.background]="tile.color">
+      <ng-container *ngIf="tile.text === 'Logout'; else loginLink">
+        <button (click)="logout()">{{tile.text}}</button>
+      </ng-container>
+      <ng-template #loginLink>
+        <a [routerLink]="tile.link">{{tile.text}}</a>
+      </ng-template>
+    </mat-grid-tile>
+  </mat-grid-list>

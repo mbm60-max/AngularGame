@@ -36,4 +36,8 @@
   .mountain-image {
     position: absolute; /* Position the mountain image absolutely */
     z-index: -1; /* Set a lower z-index */
+  }.dice-container {
+    position: absolute;
+    top: 600px; /* Adjust as needed */
+    left: 100px; /* Adjust as needed */
   }

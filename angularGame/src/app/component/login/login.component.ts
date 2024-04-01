@@ -3,6 +3,7 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { SupabaseService } from '../../service/supabase.service';
 import { Router, RouterModule } from '@angular/router';
+import { LoginService } from '../../service/loginservice.service';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ import { Router, RouterModule } from '@angular/router';
 })
 export class LoginComponent {
   loginForm!:FormGroup;
-  constructor(private formBuilder:FormBuilder,private auth:SupabaseService,private router:Router){
+  constructor(private formBuilder:FormBuilder,private auth:SupabaseService,private router:Router,private loginService:LoginService){
     this.loginForm=this.formBuilder.group({
       email:formBuilder.control('',[Validators.required,Validators.email, Validators.minLength(5)]),
       password:formBuilder.control('',[Validators.required, Validators.minLength(7)]),
@@ -22,8 +23,11 @@ export class LoginComponent {
     this.auth.signIn(this.loginForm.value.email,this.loginForm.value.password).then((res: any)=>{
       console.log(res);
       if(res.data.user!.role == "authenticated"){
-        this.router.navigate(['/game'])  
-        console.log("authenticated");
+        const { name, id, email } = res.data.user;
+      this.router.navigate(['/home']);
+      this.loginService.setAuth({ name, id, email,inGame:false,isLoggedIn:true });
+      console.log({ name, id, email,inGame:false,isLoggedIn:true });
+      console.log("authenticated");
       }
     }).catch((err: any)=>{
       console.log(err);

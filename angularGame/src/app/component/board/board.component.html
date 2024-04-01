@@ -1,20 +1,17 @@
 <div class="board" cdkDropListGroup>
-    <div
-      class="cell"
+      <div class="cell"
       *ngFor="let cell of board; let i = index"
       cdkDropList
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="i"
       [cdkDropListEnterPredicate]="enterPredicate"
-    >
-      <img
-      cdkDrag
-      [src]=currentPath(i)
-      width="30px"
-      height="30px"
-      *ngIf="cell === 1"
-      class="layer-image"
-      />
+      [style.background-color]="trail.includes(i) ? trailColor : ''">
+    <img *ngIf="cell === 1" 
+        cdkDrag
+        [src]="currentPath(i)"
+        width="30px"
+        height="30px"
+        class="layer-image" />
     </div>
   </div>
   
@@ -39,5 +36,8 @@
       [style.height.px]="30"
     >
   </div>
+</div>
+<div class="dice-container">
+  <app-dice></app-dice>
 </div>
   
