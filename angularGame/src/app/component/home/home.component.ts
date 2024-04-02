@@ -1,5 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AuthProps, LoginService } from '../../service/loginservice.service';
+import { CreateGameService } from '../../service/create-game.service';
+import { Router } from '@angular/router';
+import { SupabaseService } from '../../service/supabase.service';
 
 @Component({
   selector: 'app-home',
@@ -8,18 +11,24 @@ import { AuthProps, LoginService } from '../../service/loginservice.service';
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent {
-  authStatus:AuthProps={
+export class HomeComponent implements OnInit {
+  authStatus: AuthProps = {
     email: '',
     name: '',
     id: '',
     inGame: false,
-    isLoggedIn:false,
+    isLoggedIn: false,
   };
 
-  constructor(private loginService:LoginService) {
-    this.loginService.auth$.subscribe(value => {
-      this.authStatus = value;
-    });
+  constructor(private loginService: LoginService, private router: Router,private supabaseService:SupabaseService) {
+  }
+  ngOnInit() {
+    this.authStatus = this.loginService.getStatus();
+  }
+  handleCreateGame(){
+    this.router.navigate(['/gameCreate']);
+  }
+  handleJoinGame(){
+    this.router.navigate(['/gameCode']);
   }
 }

@@ -12,11 +12,23 @@ export interface AuthProps{
   providedIn: 'root'
 })
 export class LoginService {
-  private authSubject = new Subject<AuthProps>();
-  auth$ = this.authSubject.asObservable();
+  private authStatus: AuthProps = {
+    email: '',
+    name: '',
+    id: '',
+    inGame: false,
+    isLoggedIn: false,
+  };
+  constructor() {}
 
-  setAuth(value: AuthProps) {
-    this.authSubject.next(value);
+  setAuth(authObject:AuthProps) {
+    this.authStatus = authObject;
   }
-  constructor() { }
+
+  getLoggedIn(): boolean {
+    return this.authStatus.isLoggedIn;
+  }
+  getStatus(): AuthProps{
+    return this.authStatus;
+  }
 }

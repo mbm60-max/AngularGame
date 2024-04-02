@@ -1,0 +1,14 @@
+<mat-card >
+    <mat-card-content>
+      <div class="code-input">
+        <input type="text" maxlength="1" (input)="handleInput(0, $event)">
+        <input type="text" maxlength="1" (input)="handleInput(1, $event)">
+        <input type="text" maxlength="1" (input)="handleInput(2, $event)">
+        <input type="text" maxlength="1" (input)="handleInput(3, $event)">
+        <input type="text" maxlength="1" (input)="handleInput(4, $event)">
+        <input type="text" maxlength="1" (input)="handleInput(5, $event)">
+      </div>
+    </mat-card-content>
+    <mat-card   class="join-btn"><button (click)="setGameCode()">Confirm Code</button></mat-card>
+  <p *ngIf="codeError != ''">{{codeError}}</p>
+  </mat-card>

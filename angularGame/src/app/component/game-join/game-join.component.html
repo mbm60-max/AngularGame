@@ -1,5 +1,5 @@
 <mat-card>
-    <mat-card-content>
+    <mat-card-content >
       <p>Game Code:</p>
       <mat-card class="code-box">{{ gameStatus?.game_code }}</mat-card>
       <p>Game Link:</p>
@@ -8,9 +8,7 @@
       <mat-card class="player-count-box">{{ gameStatus ? (gameStatus.is_Full ? '2' : gameStatus.player1_id ? '1' : '0') : '0' }}/2</mat-card>
       <p>Is Ready:</p>
       <mat-card class="status-box">{{ gameStatus ? (gameStatus.is_Full ? 'Ready' : 'Not Ready') : 'Not Available' }}</mat-card>
-      <mat-card class="join-btn"><button (click)="handleJoinGame()">Join Game</button></mat-card>
-      <mat-card *ngIf="gameStatus && gameStatus.is_Full" class="join-btn">
-        <button (click)="handleStartGame()">Start Game</button>
-      </mat-card>
+      <mat-card class="status-box">{{ gameStatus ? (gameStatus.is_Full ? 'Waiting for Player 1 to Start Game' : 'Not Ready') : 'Please join a real lobby' }}</mat-card>
     </mat-card-content>
+    <mat-card class="join-btn"><button (click)="handleJoinGame()">Join Game</button></mat-card>
   </mat-card>

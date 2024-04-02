@@ -1,4 +1,4 @@
-import {Component} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
   import {MatGridListModule} from '@angular/material/grid-list';
 import { Router, RouterLink } from '@angular/router';
 import { AuthProps, LoginService } from '../../service/loginservice.service';
@@ -19,7 +19,7 @@ import { SupabaseService } from '../../service/supabase.service';
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss'
 })
-export class NavbarComponent {
+export class NavbarComponent implements OnInit {
   authStatus: AuthProps = {
     email: '',
     name: '',
@@ -31,14 +31,16 @@ export class NavbarComponent {
   tiles: Tile[] = [];
 
   constructor(private loginService: LoginService, private router: Router,private supabase:SupabaseService) {
-    this.loginService.auth$.subscribe(value => {
-      this.authStatus = value;
-      this.updateTiles(); // Update tiles after authStatus is updated
-    });
     this.updateTiles(); // Initially update tiles
   }
+  
+  ngOnInit() {
+    this.authStatus = this.loginService.getStatus();
+    this.updateTiles(); 
 
+  }
   updateTiles() {
+    console.log(this.authStatus)
     this.tiles = [
       { text: 'Home', cols: 2, rows: 1, color: 'lightblue', link: '/home' },
       { text: this.authStatus.isLoggedIn ? 'Logout' : 'Login', cols: 2, rows: 1, color: 'lightgreen', link: '/login' }
@@ -46,6 +48,7 @@ export class NavbarComponent {
   }
 
   logout() {
+    console.log(this.authStatus)
     this.supabase.signOut();
     this.loginService.setAuth({email: '',
     name: '',

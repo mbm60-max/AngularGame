@@ -1,0 +1,21 @@
+.code-input {
+    display: flex;
+    justify-content: space-between;
+    width: 300px; /* Adjust the width as needed */
+  }
+  
+  .code-input input {
+    width: calc(100% / 6 - 10px); /* Divide the width equally among 6 input boxes */
+    height: 40px;
+    padding: 5px;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    text-align: center;
+    font-size: 16px;
+  }
+  
+  .code-input input:focus {
+    outline: none;
+    border-color: #007bff; /* Change border color on focus */
+  }
