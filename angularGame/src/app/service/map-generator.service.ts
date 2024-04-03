@@ -15,7 +15,7 @@ interface MountainOptions {
 }
 
 const mountainOptions: MountainOptions = {
-  images: [{ src: "/assets/mountain1.svg", width: 300, height: 390 },{ src: "/assets/mountain2.svg", width: 320, height: 180 },{ src: "/assets/mountain3.svg", width: 90, height: 120 },
+  images: [{ src: "/assets/mountain1.svg", width: 300, height: 390 },{ src: "/assets/mountain2.svg", width: 180, height: 320 },{ src: "/assets/mountain3.svg", width: 90, height: 120 },
            { src: "/assets/mountain4.svg", width: 90, height: 150 },{ src: "/assets/mountain5.svg", width: 60, height: 60 },{ src: "/assets/mountain6.svg", width: 210, height: 300 }],
   rotations: [0],//, 90, 180, 270
   maxHeight: 1050,
@@ -28,8 +28,35 @@ const mountainOptions: MountainOptions = {
 export class MapGeneratorService {
   selectedRotation: number = 0;
   occupiedCells: boolean[] = Array(720).fill(false);
+  spiceCells: number[]=[];
   numberOfRetries:number= 0;
-  constructor() { }
+  
+  constructor() {
+    this.generateSpicePositions();
+  }
+  
+  getSpiceCells(){
+    return this.spiceCells
+  }
+  generateSpicePositions(){
+    const maxCells = 720; // Assuming 720 cells
+    const maxRetries = 100; // Maximum number of retries to avoid infinite loop
+
+    // Clear existing spice cells
+    this.spiceCells = [];
+
+    // Generate spice cells
+    for (let i = 0; i < 8; i++) {
+      let randomNumber = Math.floor(Math.random() * maxCells);
+
+      // Check if the generated number already exists in spiceCells
+      if (!this.spiceCells.includes(randomNumber)) {
+        this.spiceCells.push(randomNumber);
+      } else {
+        i--;
+      }
+    }
+  }
   getMountainPositions(numberToGenerate: number): { positions: MountainPosition[]; occupiedCells: boolean[] } {
     const positions: MountainPosition[] = [];
     const occupiedCells: boolean[] = this.occupiedCells.slice(); // Make a copy of the occupiedCells array
@@ -66,12 +93,6 @@ export class MapGeneratorService {
               }
             }
           }
-          for (let i = leftIndex; i < leftIndex + widthIndex; i++) {
-            for (let j = topIndex; j < topIndex + heightIndex; j++) {
-              const cellIndex = j * 36 + i;
-              occupiedCells[cellIndex] = true;
-            }
-          }
           break;
         case 90:
           inBounds = (randomTop >= 0 && randomTop + randomImage.width <= maxHeight) && (randomLeft >= 0 && randomLeft + randomImage.height <= maxWidth);
@@ -90,6 +111,13 @@ export class MapGeneratorService {
       // Check for overlap with existing positions
       if (!overlap && inBounds) {
         positions.push({ src: randomImage.src, left: randomLeft, top: randomTop, rotation: randomRotation });
+        for (let i = leftIndex; i < leftIndex + widthIndex; i++) {
+          for (let j = topIndex; j < topIndex + heightIndex; j++) {
+            const cellIndex = j * 36 + i;
+            occupiedCells[cellIndex] = true;
+          }
+        }
+        console.log(randomImage.src)
       } else if (this.numberOfRetries > 100) {
         return { positions, occupiedCells };
       } else {

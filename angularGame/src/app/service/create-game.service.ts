@@ -26,12 +26,12 @@ export class CreateGameService {
     return this.gameCode;
   }
  
-  handleSessionUpdates(payload: any): { game_Ref: string, game_code: string, id: number, is_Full: boolean, player1_id?: string, player2_id?: string } | null{
+  handleSessionUpdates(payload: any): { game_Ref: string, game_code: string, id: number, is_Full: boolean, player1_id?: string, player2_id?: string,playerOneHouse:string } | null{
     console.log(payload)
     if(payload){
       if (payload.eventType === 'UPDATE' || payload.eventType === "INSERT") {
-        const { game_Ref, game_code, id, is_Full, player1_id, player2_id } = payload.new;
-        return { game_Ref, game_code, id, is_Full, player1_id, player2_id };
+        const { game_Ref, game_code, id, is_Full, player1_id, player2_id,playerOneHouse } = payload.new;
+        return { game_Ref, game_code, id, is_Full, player1_id, player2_id,playerOneHouse };
     } else if (payload.eventType === 'DELETE') {
       return {
         game_Ref: "",
@@ -40,6 +40,7 @@ export class CreateGameService {
         is_Full: false,
         player1_id: undefined,
         player2_id: undefined,
+        playerOneHouse:"",
       };
   }
     else {

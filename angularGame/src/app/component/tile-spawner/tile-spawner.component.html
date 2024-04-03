@@ -1,0 +1,7 @@
+<div class="tileSpawner-container">
+    <div *ngIf="tiles.length === 0" class="no-items-selected">No items selected</div>
+    <div *ngFor="let tile of tiles; let i = index" class="tile-wrapper" [class.selected]="selectedTileIndex === i" (click)="handleTileClick(i)">
+      <div class="tile-label">Click to select</div>
+      <img [src]="tile" width="30px" height="30px" class="layer-image" />
+    </div>
+  </div>

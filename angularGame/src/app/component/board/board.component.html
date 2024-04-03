@@ -2,9 +2,11 @@
       <div class="cell"
       *ngFor="let cell of board; let i = index"
       cdkDropList
+      #boardDropList="cdkDropList"
       (cdkDropListDropped)="drop($event)"
       [cdkDropListData]="i"
       [cdkDropListEnterPredicate]="enterPredicate"
+      (click)="toggleCell(i)"
       [style.background-color]="trail.includes(i) ? trailColor : ''">
     <img *ngIf="cell === 1" 
         cdkDrag
@@ -27,7 +29,7 @@
   </div>
   <div class="sand-container">
   <!-- Repeat sand images for each cell -->
-  <div class="sand-cell" *ngFor="let cell of board; let i = index">
+  <div class="spice-cell" *ngFor="let cell of board; let i = index">
     <img
       src="/assets/sand.svg"
       width="30px"
@@ -36,8 +38,26 @@
       [style.height.px]="30"
     >
   </div>
+  <div class="spice-container">
+  <div class="sand-cell" *ngFor="let cell of waterAndSpiceBoard; let i = index">
+    <img *ngIf="cell !== ''" 
+        src="{{ cell }}"
+        width="30px"
+        height="30px"
+        [style.width.px]="30"
+        [style.height.px]="30"
+    >
 </div>
-<div class="dice-container">
-  <app-dice></app-dice>
 </div>
+  <div class="blue-cell" *ngFor="let cell of mountainBoard; let i = index">
+    <img *ngIf="cell === true"
+      src="/assets/waterPump.svg"
+      width="30px"
+      height="30px"
+      [style.width.px]="30"
+      [style.height.px]="30"
+    >
+  </div>
+</div>
+
   

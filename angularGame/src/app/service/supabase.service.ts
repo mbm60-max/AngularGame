@@ -1,6 +1,42 @@
 import { Injectable } from '@angular/core';
 import {PostgrestResponse, PostgrestSingleResponse, SupabaseClient,createClient} from '@supabase/supabase-js';
 import { environment } from '../../environments/environment.development'
+import { MountainPosition } from './map-generator.service';
+
+export interface MountainObject{
+MountainPositions:MountainPosition[]
+OccupiedCells:boolean[];
+}
+export interface PlayerObject{
+  NumberOfTroops:number;
+  TroopIndices:number[];
+  NumberOfCredits:number;
+  WaterPumpIndices:number[];
+  TotalWater:number;
+  House:string;
+  }
+
+export interface PlayersObject{
+PlayerOneObject:PlayerObject;
+PlayerTwoObject:PlayerObject;
+}
+export enum TurnEnum{
+  PlayerOne='PlayerOne',
+  PlayerTwo='PlayerTwo',
+}
+export interface TurnObject{
+CurrentPlayerTurn:TurnEnum;
+Player1Win:boolean,
+Player2Win:boolean,
+}
+export interface SpiceObject{
+SpiceFieldIndices:number[];
+PlayerOneHarvesterIndices:number[];
+PlayerTwoHarvesterIndices:number[];
+PlayerOneNumberOfHarvesters:number;
+PlayerTwoNumberOfHarvesters:number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -20,8 +56,9 @@ export class SupabaseService {
   signOut(){
     return this.supabase.auth.signOut();
   }
-  async registerPlayer(uid: string): Promise<PostgrestResponse<any> | null> {
+  async registerPlayer(uid: string,house:string): Promise<PostgrestResponse<any> | null> {
     try {
+      console.log(house)
       // Add a new row to the game_sessions table with the provided uid as player1_id
       const { data, error } = await this.supabase.from('game_session').insert([
         {
@@ -30,7 +67,8 @@ export class SupabaseService {
           is_Full: false, // is_full is initially false
           game_code: uid.substring(0, 6), // Implement this function to generate game codes
           link: "https://localhost.com", // Implement this function to generate game links
-          game_Ref: uid // Reference to player's user ID
+          game_Ref: uid, // Reference to player's user ID
+          playerOneHouse:house,
         }
       ]);
       if (error) {
@@ -109,5 +147,64 @@ export class SupabaseService {
 
 
   // Method to create a new active game
-
+  
+  async registerGame(uid: string, mountainObject: MountainObject, playersObject: PlayersObject, spiceObject: SpiceObject, turnObject: TurnObject): Promise<PostgrestResponse<any> | null> {
+    try {
+      const { data, error } = await this.supabase.from('game_table').insert([
+        {
+          MountainObject: mountainObject,
+          PlayerObject: playersObject,
+          SpiceObject: spiceObject,
+          TurnObject: turnObject,
+          gameRef: uid,
+          game_code:uid.substring(0,6),
+        }
+      ]);
+      if (error) {
+        console.error('Error registering player:', error.message);
+        return null;
+      }
+      return data;
+    } catch (error: any) {
+      console.error('Error registering player:', error.message);
+      return null;
+    }
+  }
+  async updateGameStatus(gameCode:string,mountainObject: MountainObject, playerObject: PlayerObject, spiceObject: SpiceObject, turnObject: TurnObject): Promise<PostgrestResponse<any> | null> {
+    try {
+      const { data, error } = await this.supabase.from('game_session')
+        .update({
+          mountain_object: mountainObject,
+          player_object: playerObject,
+          spice_object: spiceObject,
+          turn_object: turnObject,
+        })
+        .eq('game_code',gameCode );
+      if (error) {
+        console.error('Error setting game session full:', error.message);
+        return null;
+      }
+      return data;
+    } catch (error: any) {
+      console.error('Error setting game session full:', error.message);
+      return null;
+    }
+  }
+  subscribeToGameUpdates(uid:string,callback: (payload: any) => typeof payload){
+    const gameCode = uid.substring(0,6);
+    console.log("inner",gameCode);
+    this.supabase.channel('custom-all-channel')
+    .on(
+      'postgres_changes',
+      { event: '*', schema: 'public', table: 'game_table' },
+      (payload) => {
+        console.log('Change received!', payload)
+      }
+    )
+    .subscribe()
+}
+async unsubscribeFromGameUpdates():Promise<void>{
+  //
+  this.supabase.removeAllChannels();
+}
 }

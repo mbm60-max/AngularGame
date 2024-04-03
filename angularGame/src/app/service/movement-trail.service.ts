@@ -8,8 +8,8 @@ import { Cell } from '../component/board/board.component';
 export class MovementTrailService {
 
   constructor() { }
-
-  getTrail(startIndex: number, endIndex: number, mountainPositions: Cell[]): { trail: number[]; totalCost: number } {
+///currently counts the step before not the step taken
+  getTrail(startIndex: number, endIndex: number, mountainPositions: boolean[]): { trail: number[]; totalCost: number } {
     const numRows = 20;
     const numCols = 36;
     const totalCells = numRows * numCols;
@@ -65,7 +65,7 @@ export class MovementTrailService {
       visited[minIndex] = true;
       const neighbors = getNeighbors(minIndex);
       for (const neighbor of neighbors) {
-        const cost = mountainPositions[neighbor].isOccupied ==true ? 2 : 1;
+        const cost = mountainPositions[neighbor] ==true ? 2 : 1;
         if (!visited[neighbor] && distances[minIndex] + cost < distances[neighbor]) {
           distances[neighbor] = distances[minIndex] + cost;
         }
@@ -81,8 +81,9 @@ export class MovementTrailService {
       let minNeighbor = -1;
       let minDist = INF;
       for (const neighbor of neighbors) {
-        const cost = mountainPositions[neighbor].isOccupied ==true ? 2 : 1;
+        const cost = mountainPositions[neighbor] ==true ? 2 : 1;
         if (distances[neighbor] + cost < minDist) {
+          console.log(cost)
           minDist = distances[neighbor] + cost;
           minNeighbor = neighbor;
         }

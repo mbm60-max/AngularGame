@@ -1,0 +1,29 @@
+.tileSpawner-container {
+    position: absolute;
+    top: 600px; /* Adjust as needed */
+    left: 200px; /* Adjust as needed */
+    display: flex;
+    flex-direction: column;
+  }
+  .tile-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 10px;
+    cursor: pointer;
+  }
+  
+  .tile-wrapper.selected {
+    background-color: lightblue;
+  }
+  
+  .tile-label {
+    font-size: 12px;
+  }
+  
+  .no-items-selected {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 10px;
+  }
+  
