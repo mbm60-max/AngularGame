@@ -1,0 +1,20 @@
+/* event-card.component.scss */
+.event-card {
+    background-color: brown;
+    border: 2px solid grey;
+    border-radius: 10px;
+    padding: 20px;
+    cursor: pointer;
+    text-align: center;
+  }
+  
+  .event-card-text {
+    color: white;
+    font-weight: bold;
+  }
+  
+  .event-card-modal {
+    background-color: rgba(0, 0, 0, 0.5);
+  }
+  
+  

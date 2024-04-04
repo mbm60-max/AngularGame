@@ -16,7 +16,17 @@
         class="layer-image" />
     </div>
   </div>
-  
+  <div class="enemy-board">
+    <!-- Repeat sand images for each cell -->
+    <div  *ngFor="let cell of board; let i = index">
+      <img *ngIf="cell === 2" 
+        [src]="currentPath(i)"
+        width="30px"
+        height="30px"
+        [style.width.px]="30"
+        [style.height.px]="30"
+      >
+    </div>
   <div class="mountain-container">
     <img
       *ngFor="let position of mountainPositions"
@@ -29,7 +39,7 @@
   </div>
   <div class="sand-container">
   <!-- Repeat sand images for each cell -->
-  <div class="spice-cell" *ngFor="let cell of board; let i = index">
+  <div class="sand-cell" *ngFor="let cell of board; let i = index">
     <img
       src="/assets/sand.svg"
       width="30px"
@@ -39,7 +49,7 @@
     >
   </div>
   <div class="spice-container">
-  <div class="sand-cell" *ngFor="let cell of waterAndSpiceBoard; let i = index">
+  <div class="spice-cell" *ngFor="let cell of waterAndSpiceBoard; let i = index">
     <img *ngIf="cell !== ''" 
         src="{{ cell }}"
         width="30px"

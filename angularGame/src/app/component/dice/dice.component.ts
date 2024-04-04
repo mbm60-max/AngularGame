@@ -1,7 +1,8 @@
 import { NgIf } from '@angular/common';
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { DiceService } from '../../service/dice-roller.service';
 import { MovementService } from '../../service/movement-service.service';
+import { GameManagerService } from '../../service/game-manager.service';
 
 @Component({
   selector: 'app-dice',
@@ -11,8 +12,13 @@ import { MovementService } from '../../service/movement-service.service';
   styleUrl: './dice.component.scss'
 })
 export class DiceComponent {
-  constructor(private diceService: DiceService,private movementService:MovementService) { }
+  hasRolled:boolean=true;
+  @Input() toggleTurn: boolean = false;
+  constructor(private diceService: DiceService,private movementService:MovementService,private gameManager:GameManagerService) {
+    this.hasRolled = this.gameManager.getTurnStatus().hasRolled;
+   }
   diceValue:number=0
+  
   rollDice() {
     // Generate a random number between 1 and 6
     const dice1Value = Math.floor(Math.random() * 6) + 1;
@@ -21,5 +27,14 @@ export class DiceComponent {
     this.diceValue=totalRoll
     this.movementService.setRemainingMoves(totalRoll);
     this.diceService.rollDice(totalRoll);
+    const currentTurnStatus = this.gameManager.getTurnStatus();
+    this.gameManager.setTurnStatus({
+      hasMoved: currentTurnStatus.hasMoved,
+      hasPlaced: currentTurnStatus.hasPlaced,
+      hasTakenCard: currentTurnStatus.hasTakenCard,
+      combatFinished: currentTurnStatus.combatFinished,
+      hasRolled: true,
+    });
+    this.hasRolled=true;
   }
 }

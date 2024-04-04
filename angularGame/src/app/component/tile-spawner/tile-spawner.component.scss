@@ -11,6 +11,19 @@
     align-items: center;
     margin-bottom: 10px;
     cursor: pointer;
+    &.selected {
+        // Your existing styles for selected tile-wrapper
+      }
+    
+      .layer-image {
+        // Your existing styles for layer-image
+    
+        &.disabled {
+          // Your styles for disabled state
+          opacity: 0.5; // Example: reduce opacity to indicate disabled state
+          pointer-events: none; // Disable pointer events
+        }
+      }
   }
   
   .tile-wrapper.selected {

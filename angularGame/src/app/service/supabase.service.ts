@@ -26,6 +26,7 @@ export enum TurnEnum{
 }
 export interface TurnObject{
 CurrentPlayerTurn:TurnEnum;
+EventCards:string[];
 Player1Win:boolean,
 Player2Win:boolean,
 }
@@ -35,6 +36,8 @@ PlayerOneHarvesterIndices:number[];
 PlayerTwoHarvesterIndices:number[];
 PlayerOneNumberOfHarvesters:number;
 PlayerTwoNumberOfHarvesters:number;
+PlayerOneSpice:number;
+PlayerTwoSpice:number;
 }
 
 @Injectable({
@@ -192,12 +195,12 @@ export class SupabaseService {
   }
   subscribeToGameUpdates(uid:string,callback: (payload: any) => typeof payload){
     const gameCode = uid.substring(0,6);
-    console.log("inner",gameCode);
     this.supabase.channel('custom-all-channel')
     .on(
       'postgres_changes',
-      { event: '*', schema: 'public', table: 'game_table' },
+      { event: '*', schema: 'public', table: 'game_table',filter:`game_code=eq.${gameCode}` },
       (payload) => {
+        callback(payload);
         console.log('Change received!', payload)
       }
     )

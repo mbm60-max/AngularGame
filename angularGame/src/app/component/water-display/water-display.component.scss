@@ -1,0 +1,27 @@
+.water-display-container {
+    display: flex;
+    flex-direction: column;
+    position: absolute;
+    top: 700px; /* Adjust as needed */
+    left: 900px; /* Adjust as needed */
+  }
+  
+  .water-bar {
+    height: 20px;
+    background-color: lightblue;
+    margin-bottom: 10px;
+  }
+  
+  .water-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+  }
+  
+  .water-details {
+    display: flex;
+    justify-content: space-between;
+  }
+  

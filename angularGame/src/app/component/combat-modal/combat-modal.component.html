@@ -1,0 +1,27 @@
+<h1 mat-dialog-title>Fight Started By:{{ data.title }}</h1>
+<div mat-dialog-content class="combat-modal-content">
+  <div class="combat-screen">
+    <div class="player-info player-info-left mat-elevation-z2">
+      <h2>Aggressor</h2>
+      <p>Number of Troops: {{ data.playerOneTroops }}</p>
+      <p>Dice Roll: {{ playerOneDice }}</p>
+      <p *ngIf="playerBonus == 'PlayerOne'">Bonus: +2 troops</p>
+      <p>Total Score: {{ playerOneScore }}</p>
+    </div>
+    <div class="player-info player-info-right mat-elevation-z2">
+      <h2>Defender</h2>
+      <p>Number of Troops: {{ data.playerTwoTroops }}</p>
+      <p>Dice Roll: {{ playerTwoDice }}</p>
+      <p *ngIf="playerBonus == 'PlayerTwo'">Bonus: +2 troops</p>
+      <p>Total Score: {{ playerTwoScore }}</p>
+    </div>
+    <div *ngIf="winner != ''" class="total-score mat-elevation-z2">
+      <h2>Winner</h2>
+      <p>{{winner}}</p>
+    </div>
+  </div>
+</div>
+<div mat-dialog-actions>
+  <button   *ngIf="!fightFinished" mat-button mat-dialog-close (click)="runFight()">Start Combat</button>
+  <button   *ngIf="fightFinished" mat-button mat-dialog-close (click)="endFight()">End</button>
+</div>

@@ -11,10 +11,10 @@ export class HousePickerService {
   constructor() { }
   setSelectedHouse(selectedHouse:string){
     this.selectedHouses.playerOneHouse=selectedHouse;
-    if(selectedHouse=="Harkonen"){
+    if(selectedHouse=="House Harkonen"){
       this.selectedHouses.playerTwoHouse="Fremen";
     }else{
-      this.selectedHouses.playerTwoHouse="Harkonen";
+      this.selectedHouses.playerTwoHouse="House Harkonen";
     }
   }
   getSelectedHouses(){

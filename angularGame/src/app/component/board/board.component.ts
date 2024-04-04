@@ -5,9 +5,12 @@ import { MapGeneratorService, MountainPosition } from '../../service/map-generat
 import { MovementTrailService } from '../../service/movement-trail.service';
 import { DiceComponent } from '../dice/dice.component';
 import { MovementService } from '../../service/movement-service.service';
-import { TileEnum, TileSpawnService } from '../../service/tile-spawn.service';
+import { TileEnum, TileSpawnService, TileUpdateState } from '../../service/tile-spawn.service';
 import { SpiceManagerService } from '../../service/spice-manager.service';
 import { GameManagerService } from '../../service/game-manager.service';
+import { CombatRunnerService } from '../../service/combat-runner.service';
+import { Subscription } from 'rxjs';
+import { WaterService, WaterState } from '../../service/water.service';
 export interface Cell {
   index: number;
   src: string;
@@ -33,25 +36,38 @@ export class BoardComponent implements OnInit{
   board: number[] = Array(720).fill(0);
   waterAndSpiceBoard: string[] = Array(720).fill("");
   remainingMoves:number=6;
+  house:string="";
   mountainBoard:boolean[] = Array(720).fill(false);
   virtualBoard: Cell[] = Array.from({ length: 720 }, (_, index) => ({
     index: index,
     src: '',
     isOccupied: false
   }));
-
+  winnerSubscription: Subscription | undefined;
+  waterStateSubscription: Subscription | undefined;
+  tileUpdateSubscription: Subscription | undefined;
   playerHouse:HouseEnum=HouseEnum.Harkonen;
-
-  constructor(private movementTrailService:MovementTrailService,private movementService:MovementService,private tileSpawnService:TileSpawnService,private gameManagerService:GameManagerService) {
-    this.board[0] = 1;
-    this.board[2] = 1;
-    this.virtualBoard[0]={index:0,src:"/assets/soldier.svg",isOccupied:true}
-    this.virtualBoard[2]={index:2,src:"/assets/soldier.svg",isOccupied:true}
+  harvesterPlaced:boolean=false;
+  constructor(private movementTrailService:MovementTrailService,private movementService:MovementService,private tileSpawnService:TileSpawnService,private gameManagerService:GameManagerService,private combatRunnerService:CombatRunnerService,private waterService:WaterService) {
+  this.waterAndSpiceBoard[111]="./assets/spiceHarvester.svg"
   }
   ngOnInit(): void {
     setTimeout(() => {
+      const playerData = this.gameManagerService.getCurrentPlayer();
+      const playerOneData = this.gameManagerService.getPlayerOneData();
+      const playerTwoData = this.gameManagerService.getPlayerTwoData()
+      const player = playerData.currentPlayer;
+      this.house = playerData.house;
+      if(player == "PlayerOne"){
+        const troopIndices = playerOneData.TroopIndices;
+        const enemyTroopIndices= playerTwoData.TroopIndices;
+        this.handleTroopSpawn(troopIndices,enemyTroopIndices,this.house);
+      }else{
+        const troopIndices = playerTwoData.TroopIndices;
+        const enemyTroopIndices= playerOneData.TroopIndices;
+        this.handleTroopSpawn(troopIndices,enemyTroopIndices,this.house);
+      }
    const mapData = this.gameManagerService.getMapData();
-   console.log(mapData);
     this.mountainPositions = mapData.MountainPositions;
     let occupiedCells = mapData.OccupiedCells;
 
@@ -63,30 +79,115 @@ export class BoardComponent implements OnInit{
     const spiceData = this.gameManagerService.getSpiceData();
     const spiceCells = spiceData.SpiceFieldIndices;
     for(let i=0; i<spiceCells.length;i++){
-      console.log(spiceCells[i])
       this.waterAndSpiceBoard[spiceCells[i]]="./assets/spiceField.svg";
     }
+    const p1Harvesters = spiceData.PlayerOneHarvesterIndices
+    const p2Harvesters = spiceData.PlayerTwoHarvesterIndices
+    const p1Pumps =  playerOneData.WaterPumpIndices
+    const p2Pumps = playerTwoData.WaterPumpIndices
+    if(player == "PlayerOne"){
+      for(let i=0; i<p1Harvesters.length;i++){
+        this.waterAndSpiceBoard[p1Harvesters[i]]="./assets/spiceHarvester.svg";
+      }
+      for(let i=0; i<p1Pumps.length;i++){
+        this.waterAndSpiceBoard[p1Pumps[i]]="./assets/waterPump.svg";
+      }
+      for(let i=0; i<p2Harvesters.length;i++){
+        this.waterAndSpiceBoard[p2Harvesters[i]]="./assets/enemyTile.svg";
+      }
+      for(let i=0; i<p2Pumps.length;i++){
+        this.waterAndSpiceBoard[p2Pumps[i]]="./assets/enemyTile.svg";
+      }
+    }else{
+      for(let i=0; i<p2Harvesters.length;i++){
+        this.waterAndSpiceBoard[p2Harvesters[i]]="./assets/spiceHarvester.svg";
+      }
+      for(let i=0; i<p2Pumps.length;i++){
+        this.waterAndSpiceBoard[p2Pumps[i]]="./assets/waterPump.svg";
+      }
+      for(let i=0; i<p1Harvesters.length;i++){
+        this.waterAndSpiceBoard[p1Harvesters[i]]="./assets/enemyTile.svg";
+      }
+      for(let i=0; i<p1Pumps.length;i++){
+        this.waterAndSpiceBoard[p1Pumps[i]]="./assets/enemyTile.svg";
+      }
+    }
+    this.tileUpdateSubscription = this.tileSpawnService.getTileState().subscribe((tileState: TileUpdateState) => {
+      switch(tileState.type){
+        case("Spawn Troop"):
+        this.handleTroopSpawn([tileState.indexTarget],[],this.house);
+        break;
+        case("Spice Harvester"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Water Pump"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Enemy Object"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Clear Object"):
+        this.waterAndSpiceBoard[tileState.indexTarget]="";
+        break;
+        case("Clear Troop"):
+        this.board[tileState.indexTarget]=0
+        this.virtualBoard[tileState.indexTarget] = { index:tileState.indexTarget, src: '', isOccupied: false };
+        break;
+      }
+    
+     //handle updates
+    });
   }, 1500);
   }
 
+  handleTroopSpawn(troopIndices: number[], enemyTroopIndices: number[], house: string) {
+    const troopImageSrc = house === "Harkonen" ? "/assets/harkonen.svg" : "/assets/soldier.svg";
+    const enemyTroopImageSrc = house === "Harkonen" ? "/assets/soldier.svg" : "/assets/harkonen.svg";
+  
+    troopIndices.forEach(index => {
+      // Set the board to 1 for each troop index
+      this.board[index] = 1;
+      // Set the virtual board with appropriate image for each troop index
+      this.virtualBoard[index] = { index, src: troopImageSrc, isOccupied: true };
+    });
+  
+    enemyTroopIndices.forEach(index => {
+      // Set the board to 2 for each enemy troop index
+      this.board[index] = 2;
+      // Set the virtual board with appropriate image for each enemy troop index
+      this.virtualBoard[index] = { index, src: enemyTroopImageSrc, isOccupied: true };
+    });
+  }
   currentPath(index: number): string {
     return this.virtualBoard[index].src;
   }
+  checkIsAlreadyOccupied(index: number): boolean {
+    const boardOccupied = this.board[index] !== 0;
+    const waterAndSpiceOccupied = this.waterAndSpiceBoard[index] !== "";
+    return boardOccupied || waterAndSpiceOccupied;
+  }
   toggleCell(index: number) {
-    const tileType = this.tileSpawnService.getSelectedType();
-    switch(tileType){
-      case(TileEnum.Fremen):
-      break;
-      case(TileEnum.Harkonen):
-      break;
-      case(TileEnum.Harvester):
-      break;
-      case(TileEnum.WaterPump):
-      break;
-      case(TileEnum.None):
-      break;
+    const isAlreadyOccupied = this.checkIsAlreadyOccupied(index);
+    if(isAlreadyOccupied){
+     console.log("Already taken");
+     return;
     }
-    console.log(tileType);
+    const tileData = this.tileSpawnService.getSelectedTileData();
+    const tileState:TileUpdateState={
+      src: tileData.src,
+      indexTarget: index,
+      type: tileData.type,
+    }
+    if(tileData.type == "Spice Harvester" && !this.harvesterPlaced && this.waterAndSpiceBoard[index]=="./assets/spiceField"){
+      this.tileSpawnService.setTileState(tileState);
+      console.log(tileData);
+    }else if(tileData.type != "Spice Harvester"){
+      this.tileSpawnService.setTileState(tileState);
+      console.log(tileData);
+    }else{
+      console.log("You can't place multiple harvesters in one turn, or this is not a spice field");
+    }
+   
 }
   drop(event: CdkDragDrop<number>) {
     const previousIndex =event.previousContainer.data;
@@ -98,13 +199,83 @@ export class BoardComponent implements OnInit{
       this.board[newIndex] = 1;
       this.virtualBoard[previousIndex]={index:previousIndex,src:"",isOccupied:false}
       this.virtualBoard[newIndex]={index:newIndex,src:"/assets/soldier.svg",isOccupied:true}
+      const combatTrigger = this.combatRunnerService.checkForCombat(newIndex,this.board);
+      if(combatTrigger.inCombat){
+        this.tileSpawnService.setAggressorIndex(newIndex);
+        const combatIndices = this.combatRunnerService.searchSurroundings(newIndex,combatTrigger.defenderIndex,this.board);
+        this.winnerSubscription = this.combatRunnerService.getWinner().subscribe((winner: any) => {
+          // Handle the winner change here
+          console.log('The winner is: ', winner);
+          this.handleTroopRemoval(winner,combatIndices.engagedTroops,combatIndices.engagedEnemies);
+        });
+        this.combatRunnerService.openCombatModal(this.house,combatIndices.engagedTroops.length,combatIndices.engagedEnemies.length);
+        
+        //when combat modal is closed get updated data and change items on map
+      }else{
+        const tileState:TileUpdateState={
+          src: '',
+          indexTarget: newIndex,
+          type: 'Clear Object',
+        }
+        this.tileSpawnService.setTileState(tileState);
+      }
       this.trailColor = "rgba(0, 0, 255, 0.3)";
       this.movementService.setRemainingMoves(this.movementService.getCurrentRemainingMoves()-(trailData.totalCost));
+      const currentTurnStatus = this.gameManagerService.getTurnStatus();
+      this.gameManagerService.setTurnStatus({
+      hasMoved: true,
+      hasPlaced: currentTurnStatus.hasPlaced,
+      hasTakenCard: currentTurnStatus.hasTakenCard,
+      combatFinished: currentTurnStatus.combatFinished,
+      hasRolled: currentTurnStatus.hasRolled,
+    });
       return;
     }
     this.trailColor = "rgba(230, 62, 50,0.5)";
   }
 
+  handleTroopRemoval(winner:string,enlistedTroops:number[],enlistedEnemies:number[]){
+    if(winner == "Aggressor"){
+      for(let i = 0;i<enlistedEnemies.length;i++){
+        this.board[enlistedEnemies[i]]=0
+        this.virtualBoard[enlistedEnemies[i]] = { index:enlistedEnemies[i], src: '', isOccupied: false };
+      }
+    }else{
+      for(let i = 0;i<enlistedTroops.length;i++){
+        this.board[enlistedTroops[i]]=0
+        this.virtualBoard[enlistedTroops[i]] = { index:enlistedTroops[i], src: '', isOccupied: false };
+      }
+    }
+    if (this.winnerSubscription) {
+      this.winnerSubscription.unsubscribe();
+    }
+    //upadte game state
+    //add water ?
+    this.waterStateSubscription = this.waterService.getWaterState().subscribe((waterState: WaterState) => {
+      const updatedWaterState = { ...waterState };
+      // Update remaining water based on the winner
+      if(this.house == "House Harkonen"){
+        if (winner != "Aggressor") {
+          updatedWaterState.opponentWater+=(enlistedTroops.length*5);
+        }
+        this.waterService.setWaterState(updatedWaterState);
+      }
+      if(this.house != "House Harkonen"){
+        if (winner == "Aggressor") {
+          updatedWaterState.remainingWater+=(enlistedEnemies.length*5);
+        }
+        this.waterService.setWaterState(updatedWaterState);
+      }
+    });
+    const currentTurnStatus = this.gameManagerService.getTurnStatus();
+      this.gameManagerService.setTurnStatus({
+      hasMoved: currentTurnStatus.hasMoved,
+      hasPlaced: currentTurnStatus.hasPlaced,
+      hasTakenCard: currentTurnStatus.hasTakenCard,
+      combatFinished: true,
+      hasRolled: currentTurnStatus.hasRolled,
+  })
+  } 
   enterPredicate = (drag: CdkDrag, drop: CdkDropList) =>
     this.board[drop.data] === 0;
 } 

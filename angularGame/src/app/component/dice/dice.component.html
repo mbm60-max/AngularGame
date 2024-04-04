@@ -1,4 +1,5 @@
 <div class="dice-container">
-<button (click)="rollDice()">Roll Dice</button>
+<button [disabled]="hasRolled || !toggleTurn"  (click)="rollDice()">Roll Dice</button>
 <p *ngIf="diceValue !== null">Dice Value: {{ diceValue }}</p>
+<p>Has Rolled:{{hasRolled}}</p>
 </div>

@@ -11,6 +11,7 @@ import { MapGeneratorService } from '../../service/map-generator.service';
 import { SpiceManagerService } from '../../service/spice-manager.service';
 import { HousePickerComponent } from '../house-picker/house-picker.component';
 import { HousePickerService } from '../../service/house-picker.service';
+import { EventCardService } from '../../service/event-card.service';
 @Component({
   selector: 'app-game-create-page',
   standalone: true,
@@ -29,7 +30,7 @@ export class GameCreatePageComponent implements OnDestroy{
   selectedHouse: string="";
   gameStatus:{ game_Ref: string, game_code: string, id: number, is_Full: boolean, player1_id?: string, player2_id?: string } | null=null ;
 
-  constructor(private supabaseService:SupabaseService,private router:Router,private loginService:LoginService,private gameCreateService:CreateGameService,private gameManagerService:GameManagerService,private mapGeneratorService: MapGeneratorService,private spiceService:SpiceManagerService,private housePickerService: HousePickerService) {
+  constructor(private supabaseService:SupabaseService,private router:Router,private loginService:LoginService,private gameCreateService:CreateGameService,private gameManagerService:GameManagerService,private mapGeneratorService: MapGeneratorService,private spiceService:SpiceManagerService,private housePickerService: HousePickerService,private eventCardService:EventCardService) {
     // Subscribe to authentication events
     this.authStatus = this.loginService.getStatus();
     this.subscribeToGameSessionUpdates();
@@ -53,6 +54,7 @@ handleStartGame(){
   const spiceCells = this.spiceService.getSpiceCellsIndices();
   this.supabaseService.removeGameSession(this.authStatus.id);
   const houses = this.housePickerService.getSelectedHouses();
+  console.log(houses)
   this.gameManagerService.setCurrentPlayer("PlayerOne",this.authStatus.id,houses.playerOneHouse);
   this.gameManagerService.setGameCode(this.authStatus.id.substring(0,6));
   setTimeout(() => {
@@ -61,31 +63,34 @@ handleStartGame(){
       OccupiedCells: mountainGrid.occupiedCells,
     }, {
       PlayerOneObject: {
-        NumberOfTroops: 0,
-        TroopIndices: [],
-        NumberOfCredits: 0,
-        WaterPumpIndices: [],
+        NumberOfTroops: 5,
+        TroopIndices: [333,334,335,336,337],
+        NumberOfCredits: 100,
+        WaterPumpIndices: [101,501],
         TotalWater: 100,
         House: houses.playerOneHouse,
       },
       PlayerTwoObject: {
-        NumberOfTroops: 0,
-        TroopIndices: [],
-        NumberOfCredits: 0,
-        WaterPumpIndices: [],
+        NumberOfTroops: 3,
+        TroopIndices: [338,339,340],
+        NumberOfCredits: 100,
+        WaterPumpIndices: [100,500],
         TotalWater: 100,
         House: houses.playerTwoHouse,
       },
     }, {
       SpiceFieldIndices: spiceCells,
-      PlayerOneHarvesterIndices: [],
-      PlayerTwoHarvesterIndices: [],
-      PlayerOneNumberOfHarvesters: 0,
-      PlayerTwoNumberOfHarvesters: 0
+      PlayerOneHarvesterIndices: [115],
+      PlayerTwoHarvesterIndices: [600],
+      PlayerOneNumberOfHarvesters: 1,
+      PlayerTwoNumberOfHarvesters: 1,
+      PlayerOneSpice:30,
+      PlayerTwoSpice:30,
     }, {
       CurrentPlayerTurn: TurnEnum.PlayerOne,
+      EventCards:this.eventCardService.shufflePack(),
       Player1Win: false,
-      Player2Win: false
+      Player2Win: false,
     });
   }, 1000); // Adjust the delay time as needed
   this.router.navigate(['/game']);
