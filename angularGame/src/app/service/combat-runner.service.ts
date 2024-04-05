@@ -118,7 +118,7 @@ runFight(playerOneTroops: number, playerTwoTroops: number,startedBy:string): { p
 
   const playerOneDice = Math.floor(Math.random() * 6) + 1;
   const playerTwoDice = Math.floor(Math.random() * 6) + 1;
-  if(startedBy == "Harkonen"){
+  if(startedBy == "House Harkonen"){
     const playerOneScore = (playerOneTroops*playerOneDice) +2; 
     const playerTwoScore = playerTwoTroops*playerTwoDice;
     const playerBonus = "Player One";

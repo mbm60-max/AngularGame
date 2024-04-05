@@ -24,10 +24,12 @@ export class TileSpawnerComponent implements OnInit,OnDestroy {
   costs:CostObject;
   spiceStateSubscription: Subscription | undefined;
   creditStateSubscription: Subscription | undefined;
+  harvesterDisabledSubscription: Subscription | undefined;
   credits:number=0;
   spice:number=0;
   error:string="";
   house:string="";
+  harvesterDisabled:boolean=false;
   constructor(private tileSpawnService: TileSpawnService,private creditService:UnitCreditsService,private spiceService:SpiceManagerService,private gameManager:GameManagerService) {
     this.costs = this.tileSpawnService.getCostsAndCurrency();
     this.house = this.gameManager.getCurrentPlayer().house;
@@ -44,8 +46,15 @@ export class TileSpawnerComponent implements OnInit,OnDestroy {
       this.tileCosts = [10,5];
       this.tileCurrency = ["spice","credits"]
     }
+    this.harvesterDisabledSubscription = this.tileSpawnService.getHarvesterDisabled().subscribe((value:boolean)=>{
+      console.log("disabled set to ",value)
+      this.harvesterDisabled = value;
+    })
   }
   isDisabled(index: number): boolean {
+    if(this.tileType[index]=="Spice Harvester" && this.harvesterDisabled){
+      return true;
+    }
     if (this.tileCurrency[index] === 'credits') {
       return this.credits < this.tileCosts[index];
     } else if (this.tileCurrency[index] === 'spice') {
@@ -72,7 +81,7 @@ export class TileSpawnerComponent implements OnInit,OnDestroy {
   }
 
   handleTileClick(index: number) {
-    if (this.selectedTileIndex === index) {
+    if (this.selectedTileIndex === index || this.isDisabled(index)) {
       this.selectedTileIndex = null;
     } else {
       this.selectedTileIndex = index;

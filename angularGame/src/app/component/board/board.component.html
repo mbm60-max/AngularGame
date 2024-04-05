@@ -27,6 +27,17 @@
         [style.height.px]="30"
       >
     </div>
+    <div class="spice-container">
+      <div class="spice-cell" *ngFor="let cell of waterAndSpiceBoard; let i = index">
+        <img *ngIf="cell !== ''" 
+            src="{{ cell }}"
+            width="30px"
+            height="30px"
+            [style.width.px]="30"
+            [style.height.px]="30"
+        >
+    </div>
+    </div>
   <div class="mountain-container">
     <img
       *ngFor="let position of mountainPositions"
@@ -48,17 +59,6 @@
       [style.height.px]="30"
     >
   </div>
-  <div class="spice-container">
-  <div class="spice-cell" *ngFor="let cell of waterAndSpiceBoard; let i = index">
-    <img *ngIf="cell !== ''" 
-        src="{{ cell }}"
-        width="30px"
-        height="30px"
-        [style.width.px]="30"
-        [style.height.px]="30"
-    >
-</div>
-</div>
   <div class="blue-cell" *ngFor="let cell of mountainBoard; let i = index">
     <img *ngIf="cell === true"
       src="/assets/waterPump.svg"

@@ -48,6 +48,8 @@ export class BoardComponent implements OnInit{
   tileUpdateSubscription: Subscription | undefined;
   playerHouse:HouseEnum=HouseEnum.Harkonen;
   harvesterPlaced:boolean=false;
+  troopImageSrc:string="";
+  enemyTroopImageSrc:string="";
   constructor(private movementTrailService:MovementTrailService,private movementService:MovementService,private tileSpawnService:TileSpawnService,private gameManagerService:GameManagerService,private combatRunnerService:CombatRunnerService,private waterService:WaterService) {
   this.waterAndSpiceBoard[111]="./assets/spiceHarvester.svg"
   }
@@ -61,6 +63,8 @@ export class BoardComponent implements OnInit{
       if(player == "PlayerOne"){
         const troopIndices = playerOneData.TroopIndices;
         const enemyTroopIndices= playerTwoData.TroopIndices;
+        console.log("troops",troopIndices);
+        console.log("enemies",enemyTroopIndices);
         this.handleTroopSpawn(troopIndices,enemyTroopIndices,this.house);
       }else{
         const troopIndices = playerTwoData.TroopIndices;
@@ -141,21 +145,21 @@ export class BoardComponent implements OnInit{
   }
 
   handleTroopSpawn(troopIndices: number[], enemyTroopIndices: number[], house: string) {
-    const troopImageSrc = house === "Harkonen" ? "/assets/harkonen.svg" : "/assets/soldier.svg";
-    const enemyTroopImageSrc = house === "Harkonen" ? "/assets/soldier.svg" : "/assets/harkonen.svg";
+    this.troopImageSrc = house === "House Harkonen" ? "./assets/harkonen.svg" : "./assets/soldier.svg";
+    this.enemyTroopImageSrc = house === "House Harkonen" ? "./assets/soldier.svg" : "./assets/harkonen.svg";
   
     troopIndices.forEach(index => {
       // Set the board to 1 for each troop index
       this.board[index] = 1;
       // Set the virtual board with appropriate image for each troop index
-      this.virtualBoard[index] = { index, src: troopImageSrc, isOccupied: true };
+      this.virtualBoard[index] = { index, src: this.troopImageSrc, isOccupied: true };
     });
   
     enemyTroopIndices.forEach(index => {
       // Set the board to 2 for each enemy troop index
       this.board[index] = 2;
       // Set the virtual board with appropriate image for each enemy troop index
-      this.virtualBoard[index] = { index, src: enemyTroopImageSrc, isOccupied: true };
+      this.virtualBoard[index] = { index, src: this.enemyTroopImageSrc, isOccupied: true };
     });
   }
   currentPath(index: number): string {
@@ -167,25 +171,36 @@ export class BoardComponent implements OnInit{
     return boardOccupied || waterAndSpiceOccupied;
   }
   toggleCell(index: number) {
-    const isAlreadyOccupied = this.checkIsAlreadyOccupied(index);
-    if(isAlreadyOccupied){
-     console.log("Already taken");
-     return;
-    }
     const tileData = this.tileSpawnService.getSelectedTileData();
+    const isAlreadyOccupied = this.checkIsAlreadyOccupied(index);
     const tileState:TileUpdateState={
       src: tileData.src,
       indexTarget: index,
       type: tileData.type,
     }
-    if(tileData.type == "Spice Harvester" && !this.harvesterPlaced && this.waterAndSpiceBoard[index]=="./assets/spiceField"){
+    if(tileData.type == "Spice Harvester" && !this.harvesterPlaced ){
+      if(this.waterAndSpiceBoard[index]=="./assets/spiceField.svg"){
+        this.tileSpawnService.setTileState(tileState);
+        this.harvesterPlaced =true;
+      }else{
+        console.log(this.waterAndSpiceBoard[index]);
+        console.log("this is not a spice field");
+      }
+    }else if(tileData.type == "Water Pump"){
+      if(isAlreadyOccupied){
+        return;
+       }
+       console.log("pump spawned")
       this.tileSpawnService.setTileState(tileState);
-      console.log(tileData);
-    }else if(tileData.type != "Spice Harvester"){
+      this.tileSpawnService.setSpice();
+    }else if(tileData.type == "Spawn Troop"){
+      if(isAlreadyOccupied){
+        return;
+       }
       this.tileSpawnService.setTileState(tileState);
-      console.log(tileData);
+      this.tileSpawnService.setCredits();
     }else{
-      console.log("You can't place multiple harvesters in one turn, or this is not a spice field");
+      console.log("You can't place multiple harvesters in one turn");
     }
    
 }
@@ -198,7 +213,7 @@ export class BoardComponent implements OnInit{
       this.board[previousIndex] = 0;
       this.board[newIndex] = 1;
       this.virtualBoard[previousIndex]={index:previousIndex,src:"",isOccupied:false}
-      this.virtualBoard[newIndex]={index:newIndex,src:"/assets/soldier.svg",isOccupied:true}
+      this.virtualBoard[newIndex]={index:newIndex,src:this.troopImageSrc,isOccupied:true}
       const combatTrigger = this.combatRunnerService.checkForCombat(newIndex,this.board);
       if(combatTrigger.inCombat){
         this.tileSpawnService.setAggressorIndex(newIndex);
@@ -211,7 +226,9 @@ export class BoardComponent implements OnInit{
         this.combatRunnerService.openCombatModal(this.house,combatIndices.engagedTroops.length,combatIndices.engagedEnemies.length);
         
         //when combat modal is closed get updated data and change items on map
-      }else{
+      }else if(this.waterAndSpiceBoard[newIndex]=="./assets/enemyTile.svg"){
+        console.log(this.waterAndSpiceBoard[newIndex]);
+        console.log("on enemy tile")
         const tileState:TileUpdateState={
           src: '',
           indexTarget: newIndex,

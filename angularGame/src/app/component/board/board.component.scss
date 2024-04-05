@@ -33,6 +33,7 @@
     position: absolute; /* Position the mountain container absolutely */
     top: 0; /* Adjust top/left position as needed */
     left: 0;
+    z-index:-4;
   }
   .sand-container {
     top: 0;
@@ -43,7 +44,7 @@
     width: 800px;
     height: 800px;
     position: absolute;
-    z-index:-4;
+    z-index:-10;
   }
   .spice-container {
     top: 0;
@@ -54,10 +55,10 @@
     width: 800px;
     height: 800px;
     position: absolute;
-    z-index:0;
+    z-index:10;
   }
 
   .mountain-image {
     position: absolute; /* Position the mountain image absolutely */
-    z-index: -3; /* Set a lower z-index */
+    z-index: -4; /* Set a lower z-index */
   }

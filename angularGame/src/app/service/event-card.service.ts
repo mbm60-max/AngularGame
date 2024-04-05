@@ -15,13 +15,10 @@ export class EventCardService implements OnDestroy {
   cardList:string[]=[];
   eventCardStateSubscription: Subscription | undefined;
   constructor(private waterService:WaterService,private gameManager:GameManagerService,private creditService:UnitCreditsService,private tileSpawner:TileSpawnService) {
-    setTimeout(() => { 
-      console.log("first event cards loaded")
-      this.setCardPack()
+    
       this.eventCardStateSubscription = this.gameManager.getEventCardStatusUpdates().subscribe(() => {
         this.setCardPack();
        });
-    }, 1500);
     }
     ngOnDestroy(): void {
       if (this.eventCardStateSubscription) {
@@ -104,6 +101,7 @@ export class EventCardService implements OnDestroy {
     return randomIndex;
   }
   pickRandomIndexNotOccupied(array: number[]): number {
+    console.log(array)
     if (array.length === 720) {
         throw new Error('Array contains all indices from 0 to 719');
     }

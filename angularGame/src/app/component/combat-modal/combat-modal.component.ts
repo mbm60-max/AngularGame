@@ -33,7 +33,7 @@ export class CombatModalComponent {
       const {playerOneScore, playerTwoScore,playerOneDice,playerTwoDice,playerBonus} = this.combatRunner.runFight(+this.data.playerOneTroops, +this.data.playerTwoTroops,this.data.title);
       this.playerOneScore = playerOneScore;
       this.playerTwoScore = playerTwoScore;
-      this.winner = playerOneScore>playerTwoDice?"Aggressor":"Defender";
+      this.winner = playerOneScore>playerTwoScore?"Aggressor":"Defender";
       this.playerOneDice=playerOneDice;
       this.playerTwoDice=playerTwoDice;
       this.playerBonus=playerBonus;

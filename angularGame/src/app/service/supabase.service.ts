@@ -201,7 +201,6 @@ export class SupabaseService {
       { event: '*', schema: 'public', table: 'game_table',filter:`game_code=eq.${gameCode}` },
       (payload) => {
         callback(payload);
-        console.log('Change received!', payload)
       }
     )
     .subscribe()

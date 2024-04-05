@@ -9,8 +9,7 @@ export class UnitCreditsService implements OnDestroy{
   private total:number=0;
   creditStateSubscription: Subscription | undefined;
   constructor(private gameManagerService:GameManagerService) {
-    setTimeout(() => { 
-      console.log("first credits loaded")
+      /*console.log("first credits loaded")
     const currentPlayer = this.gameManagerService.getCurrentPlayer();
     const playerOneData =  this.gameManagerService.getPlayerOneData()
     const playerTwoData =  this.gameManagerService.getPlayerTwoData()
@@ -20,11 +19,12 @@ export class UnitCreditsService implements OnDestroy{
   }else{
     this.total = playerTwoData.NumberOfCredits +2;
     this.setCreditState(this.total);
-  }
+  }*/
   this.creditStateSubscription = this.gameManagerService.getCreditStatusUpdates().subscribe((credits:number) => {
+    console.log("credits updated")
     this.setCreditState(credits);
    });
-}, 1500);
+
   }
   ngOnDestroy(): void {
     if (this.creditStateSubscription) {
@@ -37,6 +37,7 @@ export class UnitCreditsService implements OnDestroy{
   creditState$ = this.creditSubject.asObservable();
 
   setCreditState(creditState:number) {
+    console.log("set credits called")
     this.creditSubject.next(creditState);
   }
 

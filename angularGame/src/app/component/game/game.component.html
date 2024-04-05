@@ -1,6 +1,7 @@
 <p>game works!</p>
 <app-board [lastRoll]="lastRoll" ></app-board>
 <app-dice [toggleTurn]="toggleTurn"></app-dice>
+<app-spice-display></app-spice-display> 
 <app-move-display></app-move-display>
 <app-tile-spawner></app-tile-spawner>
 <app-current-player></app-current-player>
@@ -9,7 +10,6 @@
 </div>
 <app-water-display></app-water-display>
 <app-credit-display></app-credit-display>
-<app-spice-display *ngIf="currentHouse === 'House Harkonen'"></app-spice-display>
 <div class="event-cards">
     <app-event-card-deck></app-event-card-deck>
 </div>

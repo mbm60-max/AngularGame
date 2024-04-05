@@ -52,7 +52,7 @@ export class GameManagerService {
         TroopIndices: [],
         NumberOfCredits: 0,
         WaterPumpIndices: [],
-        TotalWater: 0,
+        TotalWater:  0,
         House:"",
       },
       PlayerTwoObject: {
@@ -87,6 +87,7 @@ export class GameManagerService {
   private creditStatus = new Subject<number>();
   private spiceStatus = new Subject<SpiceState>();
   private eventCardStatus= new Subject<string[]>();
+  private houseStatus = new Subject<string>();
   private toggleValue = false;
   constructor(private supabaseService:SupabaseService,private gameCreateService:CreateGameService) { 
 
@@ -102,7 +103,7 @@ export class GameManagerService {
     this.toggleValue = !this.toggleValue;
     this.gameStatusUpdated.next(this.toggleValue);
   }
-  updateEmitterStatus(remainingSpice:number,numberOfHarvesters:number,spiceGenerated:number,remainingWater:number,numberOfPumps:number,waterGenerated:number,waterUsed:number,opponentWater:number,credits:number,cardList:string[]){
+  updateEmitterStatus(remainingSpice:number,numberOfHarvesters:number,spiceGenerated:number,remainingWater:number,numberOfPumps:number,waterGenerated:number,waterUsed:number,opponentWater:number,credits:number,cardList:string[],house:string){
     const spiceStatus:SpiceState={
       remainingSpice: remainingSpice,
       numberOfHarvesters: numberOfHarvesters,
@@ -119,6 +120,7 @@ export class GameManagerService {
     this.eventCardStatus.next(cardList);
     this.creditStatus.next(credits);
     this.spiceStatus.next(spiceStatus);
+    this.houseStatus.next(house);
   }
   getToggleValue() {
     return this.toggleValue;
@@ -194,25 +196,27 @@ export class GameManagerService {
           const p2troops = payload.new.PlayerObject.PlayerTwoObject.NumberOfTroops;
           const p1Water = payload.new.PlayerObject.PlayerOneObject.TotalWater;
           const p2Water = payload.new.PlayerObject.PlayerTwoObject.TotalWater;
-          if(player.currentPlayer=="Player One"){
+          console.log("Current Plyer",player.currentPlayer);
+          if(player.currentPlayer=="PlayerOne"){
             const numberOfPumps =payload.new.PlayerObject.PlayerOneObject.WaterPumpIndices.length;
             const p1Credits = payload.new.PlayerObject.PlayerOneObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
               const waterUsed = p1troops*5;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices,payload.new.SpiceObject.PlayerOneHarvesterIndices,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards);
+              console.log("player one trroops",p1troops)
+              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
             }else{
               const waterUsed = p1troops*2;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices,payload.new.SpiceObject.PlayerOneHarvesterIndices,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards);
+              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
             }
           }else{
             const numberOfPumps =payload.new.PlayerObject.PlayerTwoObject.WaterPumpIndices.length;
             const p2Credits = payload.new.PlayerObject.PlayerTwoObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
               const waterUsed = p2troops*5;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices,payload.new.SpiceObject.PlayerTwoHarvesterIndices,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards);
+              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
             }else{
               const waterUsed = p2troops*2;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices,payload.new.SpiceObject.PlayerTwoHarvesterIndices,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards);
+              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
             }
           }
         }
@@ -238,6 +242,9 @@ export class GameManagerService {
   }
   getEventCardStatusUpdates() {
     return this.eventCardStatus.asObservable();
+  }
+  getHouseStatusUpdates() {
+    return this.houseStatus.asObservable();
   }
 }
 

@@ -26,29 +26,11 @@ export class SpiceManagerService implements OnDestroy {
   spiceStateSubscription: Subscription | undefined;
   constructor(private mapGeneratorService: MapGeneratorService,private gameManager:GameManagerService) { 
     this.generateSpiceCells()
-    setTimeout(() => { 
       console.log("Set initial Values")
-    const currentPlayer = this.gameManager.getCurrentPlayer();
-    const spiceData = this.gameManager.getSpiceData();
-    if(currentPlayer.currentPlayer == "PlayerOne"){
-         const spiceState:SpiceState ={
-           remainingSpice: spiceData.PlayerOneNumberOfHarvesters,
-           numberOfHarvesters:  spiceData.PlayerOneSpice,
-           spiceGenerated: spiceData.PlayerOneNumberOfHarvesters,
-         }
-         this.setSpiceState(spiceState);
-    }else{
-      const spiceState:SpiceState ={
-        remainingSpice: spiceData.PlayerTwoNumberOfHarvesters,
-        numberOfHarvesters:  spiceData.PlayerTwoSpice,
-        spiceGenerated: spiceData.PlayerTwoNumberOfHarvesters,
-      }
-      this.setSpiceState(spiceState);
-    } 
     this.spiceStateSubscription = this.gameManager.getSpiceStatusUpdates().subscribe((spiceState:SpiceState) => {
+      console.log("set first spice state",spiceState)
       this.setSpiceState(spiceState);
      });
-  }, 1500);
   }
   ngOnDestroy(): void {
     if (this.spiceStateSubscription) {
@@ -60,6 +42,7 @@ export class SpiceManagerService implements OnDestroy {
   spiceState$ = this.spiceSubject.asObservable();
 
   setSpiceState(spiceState: SpiceState) {
+    console.log("set spice called with",spiceState)
     this.spiceSubject.next(spiceState);
   }
 
