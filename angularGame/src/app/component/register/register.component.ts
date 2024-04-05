@@ -19,7 +19,6 @@ constructor(private formBuilder:FormBuilder,private auth:SupabaseService){
 })}
 public onSubmit(){
   this.auth.signUp(this.registerForm.value.email,this.registerForm.value.password).then((res: any)=>{
-    console.log(res);
   }).catch((err: any)=>{
     console.log(err);
   })

@@ -15,7 +15,6 @@ export class HousePickerComponent {
   @Output() houseSelected = new EventEmitter<string>();
 
   selectHouse(house: string) {
-    console.log(house)
     this.housePickerService.setSelectedHouse(house);
   }
 

@@ -97,8 +97,6 @@ winner$ = this.winnerSubject.asObservable();
     }
     const engagedTroops = Array.from(enlistedTroops);
     const engagedEnemies= Array.from(enemyEnlistedTroops);
-    console.log(engagedTroops);
-    console.log(engagedEnemies);
     return {engagedTroops,engagedEnemies};
 }
 

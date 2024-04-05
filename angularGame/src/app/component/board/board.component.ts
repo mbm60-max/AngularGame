@@ -63,8 +63,6 @@ export class BoardComponent implements OnInit{
       if(player == "PlayerOne"){
         const troopIndices = playerOneData.TroopIndices;
         const enemyTroopIndices= playerTwoData.TroopIndices;
-        console.log("troops",troopIndices);
-        console.log("enemies",enemyTroopIndices);
         this.handleTroopSpawn(troopIndices,enemyTroopIndices,this.house);
       }else{
         const troopIndices = playerTwoData.TroopIndices;
@@ -97,10 +95,10 @@ export class BoardComponent implements OnInit{
         this.waterAndSpiceBoard[p1Pumps[i]]="./assets/waterPump.svg";
       }
       for(let i=0; i<p2Harvesters.length;i++){
-        this.waterAndSpiceBoard[p2Harvesters[i]]="./assets/enemyTile.svg";
+        this.waterAndSpiceBoard[p2Harvesters[i]]="./assets/enemyHarvester.svg";
       }
       for(let i=0; i<p2Pumps.length;i++){
-        this.waterAndSpiceBoard[p2Pumps[i]]="./assets/enemyTile.svg";
+        this.waterAndSpiceBoard[p2Pumps[i]]="./assets/enemyPump.svg";
       }
     }else{
       for(let i=0; i<p2Harvesters.length;i++){
@@ -110,10 +108,10 @@ export class BoardComponent implements OnInit{
         this.waterAndSpiceBoard[p2Pumps[i]]="./assets/waterPump.svg";
       }
       for(let i=0; i<p1Harvesters.length;i++){
-        this.waterAndSpiceBoard[p1Harvesters[i]]="./assets/enemyTile.svg";
+        this.waterAndSpiceBoard[p1Harvesters[i]]="./assets/enemyHarvester.svg";
       }
       for(let i=0; i<p1Pumps.length;i++){
-        this.waterAndSpiceBoard[p1Pumps[i]]="./assets/enemyTile.svg";
+        this.waterAndSpiceBoard[p1Pumps[i]]="./assets/enemyPump.svg";
       }
     }
     this.tileUpdateSubscription = this.tileSpawnService.getTileState().subscribe((tileState: TileUpdateState) => {
@@ -138,10 +136,84 @@ export class BoardComponent implements OnInit{
         this.virtualBoard[tileState.indexTarget] = { index:tileState.indexTarget, src: '', isOccupied: false };
         break;
       }
-    
-     //handle updates
+    this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
+        if(isEnded){
+        const boardData = this.getDataFromBoard();
+        this.gameManagerService.setBoardUpdate(this.mountainPositions,this.mountainBoard,boardData.p1NumberOfTroops,boardData.playerOneTroops,boardData.playerOnePumps,boardData.p1House,
+                                                boardData.p2NumberOfTroops,boardData.playerTwoTroops,boardData.playerTwoPumps,boardData.p2House,
+                                                boardData.spice,boardData.playerOneHarvesters,boardData.playerTwoHarvesters,boardData.playerOneNumberOfHarvesters,boardData.playerTwoNumberOfHarvesters);
+        }
+      })
     });
   }, 1500);
+  }
+  getDataFromBoard(){
+    const playerData = this.gameManagerService.getCurrentPlayer();
+    const board = this.board; 
+    const house = playerData.house;
+    const waterAndSpiceBoard = this.waterAndSpiceBoard;
+    const friendly: number[] = [];
+    const enemy: number[] = [];
+    const pumps:number[]=[];
+    const enemyPumps:number[]=[];
+    const harvesters:number[]=[];
+    const enemyHarvesters:number[]=[];
+    const spice:number[]=[];
+    for (let i = 0; i < board.length; i++) {
+        const cellValue = board[i];
+        if (cellValue === 1) {
+            // Troop belonging to the current player
+            friendly.push(i);
+        } else if (cellValue === 2) {
+            // Troop belonging to the opponent
+            enemy.push(i);
+        }
+    }
+    for (let i = 0; i < waterAndSpiceBoard.length; i++) {
+      const cellValue = waterAndSpiceBoard[i];
+      switch(cellValue){
+        case("./assets/waterPump.svg"):
+          pumps.push(i);
+        break;
+        case("./assets/enemyPump.svg"):
+          enemyPumps.push(i);
+        break;
+        case("./assets/spiceHarvester.svg"):
+          harvesters.push(i);
+        break;
+        case("./assets/enemyHarvester.svg"):
+          enemyHarvesters.push(i);
+        break;
+        case("./assets/spiceField.svg"):
+          spice.push(i);
+        break;
+      }
+  }
+    const playerOneTroops = playerData.currentPlayer === "PlayerOne" ? friendly : enemy;
+    const playerTwoTroops = playerData.currentPlayer === "PlayerOne" ? enemy : friendly;
+    const playerOnePumps = playerData.currentPlayer === "PlayerOne" ? pumps:enemyPumps;
+    const playerTwoPumps = playerData.currentPlayer === "PlayerOne" ? enemyPumps:pumps;
+    const playerOneHarvesters = playerData.currentPlayer === "PlayerOne" ? harvesters:enemyHarvesters;
+    const playerTwoHarvesters = playerData.currentPlayer === "PlayerOne" ? enemyHarvesters:harvesters;
+    const p1House = house;
+    const p2House = house === "House Harkonen"?"Fremen":"House Harkonen";
+    return {
+      playerOneTroops,
+      playerTwoTroops,
+      p1NumberOfTroops: playerOneTroops.length,
+      p2NumberOfTroops: playerTwoTroops.length,
+      playerOnePumps,
+      playerTwoPumps,
+      playerOneHarvesters,
+      playerTwoHarvesters,
+      playerOneNumberOfPumps:playerOnePumps.length,
+      playerTwoNumberOfPumps:playerTwoPumps.length,
+      playerOneNumberOfHarvesters:playerOneHarvesters.length,
+      playerTwoNumberOfHarvesters:playerTwoHarvesters.length,
+      p1House,
+      p2House,
+      spice,
+  };
   }
 
   handleTroopSpawn(troopIndices: number[], enemyTroopIndices: number[], house: string) {
@@ -183,14 +255,12 @@ export class BoardComponent implements OnInit{
         this.tileSpawnService.setTileState(tileState);
         this.harvesterPlaced =true;
       }else{
-        console.log(this.waterAndSpiceBoard[index]);
         console.log("this is not a spice field");
       }
     }else if(tileData.type == "Water Pump"){
       if(isAlreadyOccupied){
         return;
        }
-       console.log("pump spawned")
       this.tileSpawnService.setTileState(tileState);
       this.tileSpawnService.setSpice();
     }else if(tileData.type == "Spawn Troop"){
@@ -220,15 +290,13 @@ export class BoardComponent implements OnInit{
         const combatIndices = this.combatRunnerService.searchSurroundings(newIndex,combatTrigger.defenderIndex,this.board);
         this.winnerSubscription = this.combatRunnerService.getWinner().subscribe((winner: any) => {
           // Handle the winner change here
-          console.log('The winner is: ', winner);
+          console.log("troop removal called")
           this.handleTroopRemoval(winner,combatIndices.engagedTroops,combatIndices.engagedEnemies);
         });
         this.combatRunnerService.openCombatModal(this.house,combatIndices.engagedTroops.length,combatIndices.engagedEnemies.length);
         
         //when combat modal is closed get updated data and change items on map
-      }else if(this.waterAndSpiceBoard[newIndex]=="./assets/enemyTile.svg"){
-        console.log(this.waterAndSpiceBoard[newIndex]);
-        console.log("on enemy tile")
+      }else if(this.waterAndSpiceBoard[newIndex]=="./assets/enemyPump.svg" || this.waterAndSpiceBoard[newIndex]=="./assets/enemyHarvester.svg"){
         const tileState:TileUpdateState={
           src: '',
           indexTarget: newIndex,
@@ -269,6 +337,7 @@ export class BoardComponent implements OnInit{
     //upadte game state
     //add water ?
     this.waterStateSubscription = this.waterService.getWaterState().subscribe((waterState: WaterState) => {
+      console.log("heres the loop")
       const updatedWaterState = { ...waterState };
       // Update remaining water based on the winner
       if(this.house == "House Harkonen"){

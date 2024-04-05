@@ -23,14 +23,27 @@ export interface SpiceState{
 })
 export class SpiceManagerService implements OnDestroy {
   private spiceCells: SpiceCell[] = [];
+  private currentSpice:number=-1;
   spiceStateSubscription: Subscription | undefined;
   constructor(private mapGeneratorService: MapGeneratorService,private gameManager:GameManagerService) { 
     this.generateSpiceCells()
-      console.log("Set initial Values")
     this.spiceStateSubscription = this.gameManager.getSpiceStatusUpdates().subscribe((spiceState:SpiceState) => {
-      console.log("set first spice state",spiceState)
       this.setSpiceState(spiceState);
      });
+     this.gameManager.alertTurnEnd().subscribe((isEnded:boolean)=>{
+      if(isEnded){
+        const spiceUpdate = this.getSpiceUpdate();
+        this.gameManager.setSpiceUpdate(spiceUpdate.playerOneSpice,spiceUpdate.playerTwoSpice);
+        //gameManagerSet values
+      }
+    })
+  }
+  getSpiceUpdate(){
+    const playerData = this.gameManager.getCurrentPlayer();
+    const spiceData = this.gameManager.getSpiceData();
+    const playerOneSpice = playerData.currentPlayer === "PlayerOne"?this.currentSpice:spiceData.PlayerOneSpice;
+    const playerTwoSpice = playerData.currentPlayer === "PlayerOne"?spiceData.PlayerTwoSpice:this.currentSpice;
+    return {playerOneSpice:playerOneSpice,playerTwoSpice:playerTwoSpice}
   }
   ngOnDestroy(): void {
     if (this.spiceStateSubscription) {
@@ -42,7 +55,7 @@ export class SpiceManagerService implements OnDestroy {
   spiceState$ = this.spiceSubject.asObservable();
 
   setSpiceState(spiceState: SpiceState) {
-    console.log("set spice called with",spiceState)
+    this.currentSpice = spiceState.remainingSpice;
     this.spiceSubject.next(spiceState);
   }
 

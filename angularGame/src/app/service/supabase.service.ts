@@ -61,7 +61,6 @@ export class SupabaseService {
   }
   async registerPlayer(uid: string,house:string): Promise<PostgrestResponse<any> | null> {
     try {
-      console.log(house)
       // Add a new row to the game_sessions table with the provided uid as player1_id
       const { data, error } = await this.supabase.from('game_session').insert([
         {
@@ -173,23 +172,23 @@ export class SupabaseService {
       return null;
     }
   }
-  async updateGameStatus(gameCode:string,mountainObject: MountainObject, playerObject: PlayerObject, spiceObject: SpiceObject, turnObject: TurnObject): Promise<PostgrestResponse<any> | null> {
+  async updateGameStatus(gameCode:string,mountainObject: MountainObject, playersObject: PlayersObject, spiceObject: SpiceObject, turnObject: TurnObject): Promise<PostgrestResponse<any> | null> {
     try {
-      const { data, error } = await this.supabase.from('game_session')
+      const { data, error } = await this.supabase.from('game_table')
         .update({
-          mountain_object: mountainObject,
-          player_object: playerObject,
-          spice_object: spiceObject,
-          turn_object: turnObject,
+          MountainObject: mountainObject,
+          PlayerObject: playersObject,
+          SpiceObject: spiceObject,
+          TurnObject: turnObject,
         })
         .eq('game_code',gameCode );
       if (error) {
-        console.error('Error setting game session full:', error.message);
+        console.error('Error updating game status:', error.message);
         return null;
       }
       return data;
     } catch (error: any) {
-      console.error('Error setting game session full:', error.message);
+      console.error('Error updating game status:', error.message);
       return null;
     }
   }

@@ -62,8 +62,6 @@ export class TileSpawnService implements OnDestroy{
   constructor(private gameManagerService:GameManagerService,private unitCreditService:UnitCreditsService,private spiceService:SpiceManagerService,private waterService:WaterService) {
     const playerData = this.gameManagerService.getCurrentPlayer();
       this.house = playerData.house;
-      console.log("House is",playerData.house);
-      console.log("House is",this.house);
       if(playerData.house == "House Harkonen"){
          this.unitCost = 3;
          this.pumpCost = 10;
@@ -156,13 +154,13 @@ export class TileSpawnService implements OnDestroy{
       }
       const updateWater = {...this.waterData};
       updateWater.numberOfPumps+=1;
+      console.log("in tile spawner")
       this.waterService.setWaterState(updateWater);
     }
   if(tileState.type == "Spice Harvester"){
     const updateSpice = {...this.spiceData};
     updateSpice.numberOfHarvesters+=1;
     this.spiceService.setSpiceState(updateSpice);
-    console.log("spice harvester placed")
     this.harvesterDisabled.next(true);
   }
     this.tileSubject.next(tileState);

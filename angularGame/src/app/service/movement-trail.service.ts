@@ -83,7 +83,6 @@ export class MovementTrailService {
       for (const neighbor of neighbors) {
         const cost = mountainPositions[neighbor] ==true ? 2 : 1;
         if (distances[neighbor] + cost < minDist) {
-          console.log(cost)
           minDist = distances[neighbor] + cost;
           minNeighbor = neighbor;
         }

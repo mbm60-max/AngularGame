@@ -7,6 +7,7 @@ import { Observable, Subject, Subscription } from 'rxjs';
 })
 export class UnitCreditsService implements OnDestroy{
   private total:number=0;
+  private currentCredit:number=-1;
   creditStateSubscription: Subscription | undefined;
   constructor(private gameManagerService:GameManagerService) {
       /*console.log("first credits loaded")
@@ -21,10 +22,22 @@ export class UnitCreditsService implements OnDestroy{
     this.setCreditState(this.total);
   }*/
   this.creditStateSubscription = this.gameManagerService.getCreditStatusUpdates().subscribe((credits:number) => {
-    console.log("credits updated")
     this.setCreditState(credits);
    });
-
+   this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
+    if(isEnded){
+      const creditData = this.getCreditData();
+      this.gameManagerService.setCreditUpdate(creditData.playerOneCredits,creditData.playerTwoCredits);
+    }
+  })
+  }
+  getCreditData(){
+    const playerData = this.gameManagerService.getCurrentPlayer();
+    const playerOneData =this.gameManagerService.getPlayerOneData();
+    const playerTwoData=this.gameManagerService.getPlayerTwoData();
+    const playerOneCredits = playerData.currentPlayer === "PlayerOne"?this.currentCredit:playerOneData.NumberOfCredits;
+    const playerTwoCredits = playerData.currentPlayer === "PlayerOne"?playerTwoData.NumberOfCredits:this.currentCredit;
+    return {playerOneCredits:playerOneCredits,playerTwoCredits:playerTwoCredits}
   }
   ngOnDestroy(): void {
     if (this.creditStateSubscription) {
@@ -37,7 +50,7 @@ export class UnitCreditsService implements OnDestroy{
   creditState$ = this.creditSubject.asObservable();
 
   setCreditState(creditState:number) {
-    console.log("set credits called")
+    this.currentCredit=creditState;
     this.creditSubject.next(creditState);
   }
 

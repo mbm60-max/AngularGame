@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { MatDialog } from '@angular/material/dialog';
 import { EventCardService } from '../../service/event-card.service';
 import { EventCardModalComponent } from '../event-card-modal/event-card-modal.component';
@@ -12,6 +12,7 @@ import { GameManagerService } from '../../service/game-manager.service';
   styleUrl: './event-card-deck.component.scss'
 })
 export class EventCardDeckComponent {
+  @Input() toggleTurn: boolean = false;
   constructor(private dialog: MatDialog, private eventCardService: EventCardService,private gameManager:GameManagerService) {}
 
   openModal(): void {

@@ -40,7 +40,6 @@ export class NavbarComponent implements OnInit {
 
   }
   updateTiles() {
-    console.log(this.authStatus)
     this.tiles = [
       { text: 'Home', cols: 2, rows: 1, color: 'lightblue', link: '/home' },
       { text: this.authStatus.isLoggedIn ? 'Logout' : 'Login', cols: 2, rows: 1, color: 'lightgreen', link: '/login' }
@@ -48,7 +47,6 @@ export class NavbarComponent implements OnInit {
   }
 
   logout() {
-    console.log(this.authStatus)
     this.supabase.signOut();
     this.loginService.setAuth({email: '',
     name: '',

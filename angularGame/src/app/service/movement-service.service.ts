@@ -23,7 +23,6 @@ export class MovementService {
   }
 
   canMove(totalCost: number): boolean {
-    console.log(totalCost)
     return ((this.remainingMovesSubject.value >= totalCost)&&(totalCost!=0)); //last check to prevent dropping on same space upping value
   }
 }

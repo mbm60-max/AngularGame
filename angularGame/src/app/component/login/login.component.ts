@@ -21,13 +21,10 @@ export class LoginComponent {
   })}
   public onSubmit(){
     this.auth.signIn(this.loginForm.value.email,this.loginForm.value.password).then((res: any)=>{
-      console.log(res);
       if(res.data.user!.role == "authenticated"){
         const { name, id, email } = res.data.user;
       this.router.navigate(['/home']);
       this.loginService.setAuth({ name, id, email,inGame:false,isLoggedIn:true });
-      console.log({ name, id, email,inGame:false,isLoggedIn:true });
-      console.log("authenticated");
       }
     }).catch((err: any)=>{
       console.log(err);

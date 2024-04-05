@@ -17,7 +17,6 @@ export class CreditDisplayComponent implements OnInit,OnDestroy {
  }
   ngOnInit(){
     this.creditStateSubscription = this.creditService.getCreditState().subscribe((creditState: number) => {
-      console.log("credit changed",creditState)
       this.credits = creditState;
     });
   }

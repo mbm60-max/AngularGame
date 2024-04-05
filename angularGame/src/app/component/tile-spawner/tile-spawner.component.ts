@@ -1,6 +1,6 @@
 import { CdkDropList, DragDropModule } from '@angular/cdk/drag-drop';
 import { NgFor, NgIf } from '@angular/common';
-import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { CostObject, TileEnum, TileSelectionState, TileSpawnService } from '../../service/tile-spawn.service';
 import { UnitCreditsService } from '../../service/unit-credits.service';
 import { SpiceManagerService, SpiceState } from '../../service/spice-manager.service';
@@ -15,6 +15,7 @@ import { GameManagerService } from '../../service/game-manager.service';
   styleUrl: './tile-spawner.component.scss'
 })
 export class TileSpawnerComponent implements OnInit,OnDestroy {
+  @Input() toggleTurn: boolean = false;
   tiles: TileEnum[] = [];
   tileSrc:string[]= [];
   tileType:string[]=[];
@@ -47,11 +48,13 @@ export class TileSpawnerComponent implements OnInit,OnDestroy {
       this.tileCurrency = ["spice","credits"]
     }
     this.harvesterDisabledSubscription = this.tileSpawnService.getHarvesterDisabled().subscribe((value:boolean)=>{
-      console.log("disabled set to ",value)
       this.harvesterDisabled = value;
     })
   }
   isDisabled(index: number): boolean {
+    if(!this.toggleTurn){
+      return true;
+    }
     if(this.tileType[index]=="Spice Harvester" && this.harvesterDisabled){
       return true;
     }

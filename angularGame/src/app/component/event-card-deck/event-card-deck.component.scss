@@ -17,4 +17,9 @@
     background-color: rgba(0, 0, 0, 0.5);
   }
   
-  
+  .event-card-disabled {
+    background-color: #ccc; /* Grey background */
+    border-color: #999; /* Darker grey border */
+    color: #666; /* Dark grey text */
+    cursor: not-allowed; /* Change cursor to indicate not clickable */
+}

@@ -12,11 +12,12 @@ import { SpiceDisplayComponent } from '../spice-display/spice-display.component'
 import { CreditDisplayComponent } from '../credit-display/credit-display.component';
 import { NgIf } from '@angular/common';
 import { EventCardDeckComponent } from '../event-card-deck/event-card-deck.component';
+import { EndTurnComponent } from '../end-turn/end-turn.component';
 
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [BoardComponent,DiceComponent,MoveDisplayComponent,TileSpawnerComponent,CurrentPlayerComponent,WaterDisplayComponent,SpiceDisplayComponent,CreditDisplayComponent,NgIf,EventCardDeckComponent],
+  imports: [BoardComponent,DiceComponent,MoveDisplayComponent,TileSpawnerComponent,CurrentPlayerComponent,WaterDisplayComponent,SpiceDisplayComponent,CreditDisplayComponent,NgIf,EventCardDeckComponent,EndTurnComponent],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss'
 })
@@ -37,7 +38,6 @@ export class GameComponent implements OnDestroy,OnInit{
     setTimeout(() => {
       const currentPlayer = this.gameManagerService.getCurrentPlayer();
       this.currentHouse= currentPlayer.house;
-      console.log(currentPlayer);
       if (currentPlayer.currentPlayer == "PlayerOne") {
         this.toggleTurn = true;
       } else {

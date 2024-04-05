@@ -19,6 +19,11 @@ export class EventCardService implements OnDestroy {
       this.eventCardStateSubscription = this.gameManager.getEventCardStatusUpdates().subscribe(() => {
         this.setCardPack();
        });
+       this.gameManager.alertTurnEnd().subscribe((isEnded:boolean)=>{
+        if(isEnded){
+          //gameManagerSet values
+        }
+      })
     }
     ngOnDestroy(): void {
       if (this.eventCardStateSubscription) {
@@ -160,6 +165,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.remainingWater-=5;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });
@@ -169,6 +175,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.remainingWater-=10;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });
@@ -178,6 +185,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.remainingWater+=5;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });
@@ -187,6 +195,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.remainingWater+=10;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });
@@ -204,6 +213,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.numberOfPumps -=1;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });
@@ -221,6 +231,7 @@ takeCard(): string {
     const subscription = this.waterService.getWaterState().subscribe(currentState => {
       let updateState = {...currentState};
       updateState.numberOfPumps +=1;
+      console.log("in event Card")
       this.waterService.setWaterState(updateState);
       subscription.unsubscribe(); 
   });

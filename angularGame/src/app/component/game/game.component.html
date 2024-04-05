@@ -3,7 +3,7 @@
 <app-dice [toggleTurn]="toggleTurn"></app-dice>
 <app-spice-display></app-spice-display> 
 <app-move-display></app-move-display>
-<app-tile-spawner></app-tile-spawner>
+<app-tile-spawner [toggleTurn]="toggleTurn"></app-tile-spawner>
 <app-current-player></app-current-player>
 <div class="turnBox">
     <h2>Is it your turn ?:{{toggleTurn}}</h2>
@@ -11,5 +11,6 @@
 <app-water-display></app-water-display>
 <app-credit-display></app-credit-display>
 <div class="event-cards">
-    <app-event-card-deck></app-event-card-deck>
+    <app-event-card-deck [toggleTurn]="toggleTurn"></app-event-card-deck>
 </div>
+<app-end-turn></app-end-turn>

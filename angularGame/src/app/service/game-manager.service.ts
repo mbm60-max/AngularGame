@@ -1,11 +1,12 @@
 import { Injectable } from '@angular/core';
-import { MountainObject, PlayersObject, SpiceObject, SupabaseService, TurnEnum, TurnObject } from './supabase.service';
+import { MountainObject, PlayerObject, PlayersObject, SpiceObject, SupabaseService, TurnEnum, TurnObject } from './supabase.service';
 import { CreateGameService } from './create-game.service';
 import { Subject } from 'rxjs';
 import { SpiceManagerService, SpiceState } from './spice-manager.service';
 import { EventCardService } from './event-card.service';
 import { UnitCreditsService } from './unit-credits.service';
 import { WaterService, WaterState } from './water.service';
+import { MountainPosition } from './map-generator.service';
 
 export interface PlayerType {
   currentPlayer: string;
@@ -82,12 +83,43 @@ export class GameManagerService {
   gameRef:"",
   game_code:"",
   }
+  MountainPositionsUpdate:MountainPosition[]=[];
+  OccupiedCellsUpdate:boolean[]=[];
+
+  p1NumberOfTroopsUpdate:number=0;
+  p1TroopIndicesUpdate:number[]=[];
+  p1NumberOfCreditsUpdate:number=0;
+  p1WaterPumpIndicesUpdate:number[]=[];
+  p1TotalWaterUpdate:number=0;
+  p1HouseUpdate:string="";
+
+  p2NumberOfTroopsUpdate:number=0;
+  p2TroopIndicesUpdate:number[]=[];
+  p2NumberOfCreditsUpdate:number=0;
+  p2WaterPumpIndicesUpdate:number[]=[];
+  p2TotalWaterUpdate:number=0;
+  p2HouseUpdate:string="";
+
+  SpiceFieldIndicesUpdate:number[] =[];
+  PlayerOneHarvesterIndicesUpdate:number[] =[];
+  PlayerTwoHarvesterIndicesUpdate:number[] =[];
+  PlayerOneNumberOfHarvestersUpdate:number =0;
+  PlayerTwoNumberOfHarvestersUpdate:number =0;
+  PlayerOneSpiceUpdate:number =0;
+  PlayerTwoSpiceUpdate:number =0;
+  
+  CurrentPlayerTurnUpdate: TurnEnum=TurnEnum.PlayerOne;
+  EventCardsUpdate:string[]=[];
+  Player1WinUpdate:boolean = false;
+  Player2WinUpdate:boolean = false;
+  
   private gameStatusUpdated = new Subject<boolean>();
   private waterStatus= new Subject<WaterState>();
   private creditStatus = new Subject<number>();
   private spiceStatus = new Subject<SpiceState>();
   private eventCardStatus= new Subject<string[]>();
   private houseStatus = new Subject<string>();
+  private endTurnStatus = new Subject<boolean>();
   private toggleValue = false;
   constructor(private supabaseService:SupabaseService,private gameCreateService:CreateGameService) { 
 
@@ -196,13 +228,11 @@ export class GameManagerService {
           const p2troops = payload.new.PlayerObject.PlayerTwoObject.NumberOfTroops;
           const p1Water = payload.new.PlayerObject.PlayerOneObject.TotalWater;
           const p2Water = payload.new.PlayerObject.PlayerTwoObject.TotalWater;
-          console.log("Current Plyer",player.currentPlayer);
           if(player.currentPlayer=="PlayerOne"){
             const numberOfPumps =payload.new.PlayerObject.PlayerOneObject.WaterPumpIndices.length;
             const p1Credits = payload.new.PlayerObject.PlayerOneObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
               const waterUsed = p1troops*5;
-              console.log("player one trroops",p1troops)
               this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
             }else{
               const waterUsed = p1troops*2;
@@ -225,6 +255,91 @@ export class GameManagerService {
       }
   })  
   }
+  endTurn(){
+    this.endTurnStatus.next(true);
+    this.setTurnUpdate();
+    
+    const mountainObject:MountainObject={
+      MountainPositions: this.MountainPositionsUpdate,
+      OccupiedCells: this.OccupiedCellsUpdate,
+    }
+    const playersObject:PlayersObject={
+      PlayerOneObject: {
+        NumberOfTroops: this.p1NumberOfTroopsUpdate,
+        TroopIndices: this.p1TroopIndicesUpdate,
+        NumberOfCredits: this.p1NumberOfCreditsUpdate,
+        WaterPumpIndices: this.p1WaterPumpIndicesUpdate,
+        TotalWater: this.p1TotalWaterUpdate,
+        House: this.p1HouseUpdate,
+      },
+      PlayerTwoObject: {
+        NumberOfTroops: this.p2NumberOfTroopsUpdate,
+        TroopIndices: this.p2TroopIndicesUpdate,
+        NumberOfCredits: this.p2NumberOfCreditsUpdate,
+        WaterPumpIndices: this.p2WaterPumpIndicesUpdate,
+        TotalWater: this.p2TotalWaterUpdate,
+        House: this.p2HouseUpdate,
+      },
+    }
+    const spiceObject:SpiceObject={
+      SpiceFieldIndices: this.SpiceFieldIndicesUpdate,
+      PlayerOneHarvesterIndices: this.PlayerOneHarvesterIndicesUpdate,
+      PlayerTwoHarvesterIndices: this.PlayerTwoHarvesterIndicesUpdate,
+      PlayerOneNumberOfHarvesters:this.PlayerOneNumberOfHarvestersUpdate,
+      PlayerTwoNumberOfHarvesters:this.PlayerTwoNumberOfHarvestersUpdate,
+      PlayerOneSpice: this.PlayerOneSpiceUpdate,
+      PlayerTwoSpice: this.PlayerTwoSpiceUpdate,
+    }
+    const turnObject:TurnObject={
+      CurrentPlayerTurn: this.CurrentPlayerTurnUpdate,
+      EventCards: this.EventCardsUpdate,
+      Player1Win: this.Player1WinUpdate,
+      Player2Win: this.Player2WinUpdate,
+    }
+    console.log("updated game status")
+    this.supabaseService.updateGameStatus(this.gameCode,mountainObject,playersObject,spiceObject,turnObject);
+  }
+  setBoardUpdate(MountainPositionsUpdate:MountainPosition[],OccupiedCellsUpdate:boolean[],p1NumberOfTroopsUpdate:number,p1TroopIndicesUpdate:number[],
+                 p1WaterPumpIndicesUpdate:number[],p1HouseUpdate:string,p2NumberOfTroopsUpdate:number,p2TroopIndicesUpdate:number[],p2WaterPumpIndicesUpdate:number[],p2HouseUpdate:string,
+                 SpiceFieldIndicesUpdate:number[],PlayerOneHarvesterIndicesUpdate:number[],PlayerTwoHarvesterIndicesUpdate:number[],PlayerOneNumberOfHarvestersUpdate:number,PlayerTwoNumberOfHarvestersUpdate:number){
+                  this.MountainPositionsUpdate=MountainPositionsUpdate;
+                  this.OccupiedCellsUpdate=OccupiedCellsUpdate;
+
+                  this.p1NumberOfTroopsUpdate=p1NumberOfTroopsUpdate;
+                  this.p1TroopIndicesUpdate=p1TroopIndicesUpdate;
+                  this.p1WaterPumpIndicesUpdate=p1WaterPumpIndicesUpdate;
+                  this.p1HouseUpdate=p1HouseUpdate;
+
+                  this.p2NumberOfTroopsUpdate=p2NumberOfTroopsUpdate;
+                  this.p2TroopIndicesUpdate=p2TroopIndicesUpdate;
+                  this.p2WaterPumpIndicesUpdate=p2WaterPumpIndicesUpdate;
+                  this.p2HouseUpdate=p2HouseUpdate;
+
+                  this.SpiceFieldIndicesUpdate=SpiceFieldIndicesUpdate;
+                  this.PlayerOneHarvesterIndicesUpdate=PlayerOneHarvesterIndicesUpdate;
+                  this.PlayerTwoHarvesterIndicesUpdate=PlayerTwoHarvesterIndicesUpdate;
+                  this.PlayerOneNumberOfHarvestersUpdate=PlayerOneNumberOfHarvestersUpdate;
+                  this.PlayerTwoNumberOfHarvestersUpdate=PlayerTwoNumberOfHarvestersUpdate;
+  }
+  setCreditUpdate(p1NumberOfCreditsUpdate:number,p2NumberOfCreditsUpdate:number){
+    this.p1NumberOfCreditsUpdate=p1NumberOfCreditsUpdate;
+    this.p2NumberOfCreditsUpdate=p2NumberOfCreditsUpdate;
+  }
+  setWaterUpdate(p1TotalWaterUpdate:number,p2TotalWaterUpdate:number){
+    this.p1TotalWaterUpdate = p1TotalWaterUpdate;
+    this.p2TotalWaterUpdate = p2TotalWaterUpdate;
+  }
+  setSpiceUpdate(PlayerOneSpiceUpdate:number,PlayerTwoSpiceUpdate:number){
+    this.PlayerOneSpiceUpdate=PlayerOneSpiceUpdate;
+    this.PlayerTwoSpiceUpdate=PlayerTwoSpiceUpdate;
+  }
+  //to be added once event cards are fixed
+  setTurnUpdate(){
+    this.CurrentPlayerTurnUpdate=this.gameStatus.TurnObject.CurrentPlayerTurn = TurnEnum.PlayerOne?TurnEnum.PlayerTwo:TurnEnum.PlayerOne;
+    this.EventCardsUpdate=[];
+    this.Player1WinUpdate=false;
+    this.Player2WinUpdate=false;
+  }
   unsubscribeFromGameUpdates(){
     this.supabaseService.unsubscribeFromGameUpdates();
   }
@@ -245,6 +360,9 @@ export class GameManagerService {
   }
   getHouseStatusUpdates() {
     return this.houseStatus.asObservable();
+  }
+  alertTurnEnd() {
+    return this.endTurnStatus.asObservable();
   }
 }
 

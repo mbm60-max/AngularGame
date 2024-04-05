@@ -54,7 +54,6 @@ handleStartGame(){
   const spiceCells = this.spiceService.getSpiceCellsIndices();
   this.supabaseService.removeGameSession(this.authStatus.id);
   const houses = this.housePickerService.getSelectedHouses();
-  console.log(houses)
   this.gameManagerService.setCurrentPlayer("PlayerOne",this.authStatus.id,houses.playerOneHouse);
   this.gameManagerService.setGameCode(this.authStatus.id.substring(0,6));
   setTimeout(() => {
