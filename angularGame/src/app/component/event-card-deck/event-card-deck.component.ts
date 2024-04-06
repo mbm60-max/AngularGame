@@ -17,6 +17,7 @@ export class EventCardDeckComponent {
 
   openModal(): void {
     const cardText = this.eventCardService.takeCard();
+    console.log("Chosen  Card",cardText);
     const currentTurnStatus = this.gameManager.getTurnStatus();
       this.gameManager.setTurnStatus({
       hasMoved: currentTurnStatus.hasMoved,

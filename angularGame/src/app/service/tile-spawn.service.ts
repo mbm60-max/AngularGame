@@ -141,6 +141,7 @@ export class TileSpawnService implements OnDestroy{
   tileState$ = this.tileSubject.asObservable();
 
   setTileState(tileState: TileUpdateState) {
+    console.log("updating tiles from emitter")
     if(tileState.type == "Spawn Troop"){
       if((this.credits-this.unitCost)<0){
        return;

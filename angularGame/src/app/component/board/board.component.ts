@@ -35,7 +35,7 @@ export class BoardComponent implements OnInit{
   trailColor:string="rgba(0, 0, 255, 0.1)";
   board: number[] = Array(720).fill(0);
   waterAndSpiceBoard: string[] = Array(720).fill("");
-  remainingMoves:number=6;
+  remainingMoves:number=-1;
   house:string="";
   mountainBoard:boolean[] = Array(720).fill(false);
   virtualBoard: Cell[] = Array.from({ length: 720 }, (_, index) => ({
@@ -55,7 +55,59 @@ export class BoardComponent implements OnInit{
   }
   ngOnInit(): void {
     setTimeout(() => {
-      const playerData = this.gameManagerService.getCurrentPlayer();
+    this.initialiseBoard();
+    this.gameManagerService.getGameStatusUpdates()
+      .subscribe(value => {
+        console.log("game status update in board",value)
+        //maybe only update when value != original stored
+        this.initialiseBoard();
+        // Do something with the updated value
+      });
+    this.tileUpdateSubscription = this.tileSpawnService.getTileState().subscribe((tileState: TileUpdateState) => {
+      console.log("tile update requested")
+      switch(tileState.type){
+        case("Spawn Troop"):
+        this.handleTroopSpawn([tileState.indexTarget],[],this.house);
+        break;
+        case("Spice Harvester"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Water Pump"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Enemy Object"):
+        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
+        break;
+        case("Clear Object"):
+        this.waterAndSpiceBoard[tileState.indexTarget]="";
+        break;
+        case("Clear Troop"):
+        this.board[tileState.indexTarget]=0
+        this.virtualBoard[tileState.indexTarget] = { index:tileState.indexTarget, src: '', isOccupied: false };
+        break;
+      }
+    this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
+        if(isEnded){
+        this.remainingMoves=0;
+        const boardData = this.getDataFromBoard();
+        this.gameManagerService.setBoardUpdate(this.mountainPositions,this.mountainBoard,boardData.p1NumberOfTroops,boardData.playerOneTroops,boardData.playerOnePumps,boardData.p1House,
+                                                boardData.p2NumberOfTroops,boardData.playerTwoTroops,boardData.playerTwoPumps,boardData.p2House,
+                                                boardData.spice,boardData.playerOneHarvesters,boardData.playerTwoHarvesters,boardData.playerOneNumberOfHarvesters,boardData.playerTwoNumberOfHarvesters);
+        }
+      })
+    });
+  }, 1500);
+  }
+  initialiseBoard(){
+    this.board = Array(720).fill(0);
+    this.waterAndSpiceBoard = Array(720).fill("");
+    this.mountainBoard = Array(720).fill(false);
+    this.virtualBoard = Array.from({ length: 720 }, (_, index) => ({
+      index: index,
+      src: '',
+      isOccupied: false
+    }));
+    const playerData = this.gameManagerService.getCurrentPlayer();
       const playerOneData = this.gameManagerService.getPlayerOneData();
       const playerTwoData = this.gameManagerService.getPlayerTwoData()
       const player = playerData.currentPlayer;
@@ -114,38 +166,6 @@ export class BoardComponent implements OnInit{
         this.waterAndSpiceBoard[p1Pumps[i]]="./assets/enemyPump.svg";
       }
     }
-    this.tileUpdateSubscription = this.tileSpawnService.getTileState().subscribe((tileState: TileUpdateState) => {
-      switch(tileState.type){
-        case("Spawn Troop"):
-        this.handleTroopSpawn([tileState.indexTarget],[],this.house);
-        break;
-        case("Spice Harvester"):
-        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
-        break;
-        case("Water Pump"):
-        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
-        break;
-        case("Enemy Object"):
-        this.waterAndSpiceBoard[tileState.indexTarget]=tileState.src;
-        break;
-        case("Clear Object"):
-        this.waterAndSpiceBoard[tileState.indexTarget]="";
-        break;
-        case("Clear Troop"):
-        this.board[tileState.indexTarget]=0
-        this.virtualBoard[tileState.indexTarget] = { index:tileState.indexTarget, src: '', isOccupied: false };
-        break;
-      }
-    this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
-        if(isEnded){
-        const boardData = this.getDataFromBoard();
-        this.gameManagerService.setBoardUpdate(this.mountainPositions,this.mountainBoard,boardData.p1NumberOfTroops,boardData.playerOneTroops,boardData.playerOnePumps,boardData.p1House,
-                                                boardData.p2NumberOfTroops,boardData.playerTwoTroops,boardData.playerTwoPumps,boardData.p2House,
-                                                boardData.spice,boardData.playerOneHarvesters,boardData.playerTwoHarvesters,boardData.playerOneNumberOfHarvesters,boardData.playerTwoNumberOfHarvesters);
-        }
-      })
-    });
-  }, 1500);
   }
   getDataFromBoard(){
     const playerData = this.gameManagerService.getCurrentPlayer();

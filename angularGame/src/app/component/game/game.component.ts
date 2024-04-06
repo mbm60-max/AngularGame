@@ -35,7 +35,7 @@ export class GameComponent implements OnDestroy,OnInit{
   }
  
   handleIntialToggle(){
-    setTimeout(() => {
+    /*setTimeout(() => {
       const currentPlayer = this.gameManagerService.getCurrentPlayer();
       this.currentHouse= currentPlayer.house;
       if (currentPlayer.currentPlayer == "PlayerOne") {
@@ -43,11 +43,12 @@ export class GameComponent implements OnDestroy,OnInit{
       } else {
         this.toggleTurn = false;
       }
-    }, 2000); // 2-second delay
+    }, 2000); // 2-second delay*/
   }
   ngOnInit(): void {
     this.toggleSubscription = this.gameManagerService.getGameStatusUpdates()
       .subscribe(value => {
+        console.log("game status update",value)
         this.toggleTurn = value;
         // Do something with the updated value
       });

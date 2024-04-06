@@ -131,9 +131,12 @@ export class GameManagerService {
   getTurnStatus(){
     return this.turnStatus;
   }
-  toggleBoolean() {
-    this.toggleValue = !this.toggleValue;
-    this.gameStatusUpdated.next(this.toggleValue);
+  toggleBoolean(currentPlayer:string,currentTurn:TurnEnum) {
+    if((currentPlayer == "PlayerOne" && currentTurn == TurnEnum.PlayerOne)||(currentPlayer == "PlayerTwo" && currentTurn == TurnEnum.PlayerTwo)){
+      this.gameStatusUpdated.next(true);
+      return;
+    }
+    this.gameStatusUpdated.next(false);
   }
   updateEmitterStatus(remainingSpice:number,numberOfHarvesters:number,spiceGenerated:number,remainingWater:number,numberOfPumps:number,waterGenerated:number,waterUsed:number,opponentWater:number,credits:number,cardList:string[],house:string){
     const spiceStatus:SpiceState={
@@ -148,6 +151,10 @@ export class GameManagerService {
       waterUsed: waterUsed,
       opponentWater: opponentWater,
     }
+    console.log("Water Emit",waterStatus)
+    console.log("Credit Emit",credits)
+    console.log("Spice Emit",spiceStatus)
+    console.log("house Emit",house)
     this.waterStatus.next(waterStatus);
     this.eventCardStatus.next(cardList);
     this.creditStatus.next(credits);
@@ -222,31 +229,63 @@ export class GameManagerService {
             gameRef: payload.new.game_Ref,
             game_code: payload.new.game_code,
           };
-          this.toggleBoolean();
+          this.toggleBoolean(this.playerStatus.currentPlayer,payload.new.TurnObject.CurrentPlayerTurn);
           const player = this.getCurrentPlayer();
           const p1troops = payload.new.PlayerObject.PlayerOneObject.NumberOfTroops;
           const p2troops = payload.new.PlayerObject.PlayerTwoObject.NumberOfTroops;
-          const p1Water = payload.new.PlayerObject.PlayerOneObject.TotalWater;
-          const p2Water = payload.new.PlayerObject.PlayerTwoObject.TotalWater;
+          let p1Water = payload.new.PlayerObject.PlayerOneObject.TotalWater;
+          let p2Water = payload.new.PlayerObject.PlayerTwoObject.TotalWater;
+          let p1Spice = payload.new.SpiceObject.PlayerOneSpice;
+          let p2Spice = payload.new.SpiceObject.PlayerTwoSpice;
+          //this.gameStatusUpdated.next(false);
           if(player.currentPlayer=="PlayerOne"){
             const numberOfPumps =payload.new.PlayerObject.PlayerOneObject.WaterPumpIndices.length;
-            const p1Credits = payload.new.PlayerObject.PlayerOneObject.NumberOfCredits;
+            let p1Credits = payload.new.PlayerObject.PlayerOneObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
               const waterUsed = p1troops*5;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
+              if((payload.new.TurnObject.CurrentPlayerTurn == TurnEnum.PlayerOne)){
+                p1Water = p1Water - (waterUsed) + (numberOfPumps*5)
+                p1Spice += payload.new.SpiceObject.PlayerOneHarvesterIndices.length;
+                p1Credits +=2;
+                //add spice and credit updates
+                this.updateEmitterStatus(p1Spice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
+                return
+              }
+                this.updateEmitterStatus(p1Spice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,0,p1Water,numberOfPumps,0,0,p2Water,p1Credits,eventCards,player.house);
             }else{
               const waterUsed = p1troops*2;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerOneSpice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
+              if((payload.new.TurnObject.CurrentPlayerTurn == TurnEnum.PlayerOne)){
+                p1Water = p1Water - (waterUsed) + (numberOfPumps*5)
+                p1Spice += 1;
+                p1Credits +=2;
+                this.updateEmitterStatus(p1Spice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,p1Water,numberOfPumps,numberOfPumps*5,waterUsed,p2Water,p1Credits,eventCards,player.house);
+                return
+              }
+              this.updateEmitterStatus(p1Spice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,0,p1Water,numberOfPumps,0,0,p2Water,p1Credits,eventCards,player.house);
             }
           }else{
             const numberOfPumps =payload.new.PlayerObject.PlayerTwoObject.WaterPumpIndices.length;
-            const p2Credits = payload.new.PlayerObject.PlayerTwoObject.NumberOfCredits;
+            let p2Credits = payload.new.PlayerObject.PlayerTwoObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
               const waterUsed = p2troops*5;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
+              if((payload.new.TurnObject.CurrentPlayerTurn == TurnEnum.PlayerTwo)){
+                p2Water = p2Water - (waterUsed) + (numberOfPumps*5)
+                p2Spice += payload.new.SpiceObject.PlayerTwoHarvesterIndices.length;
+                p2Credits +=2;
+                this.updateEmitterStatus(p2Spice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
+                return
+              }
+              this.updateEmitterStatus(p2Spice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,0,p2Water,numberOfPumps,0,0,p1Water,p2Credits,eventCards,player.house);
             }else{
               const waterUsed = p2troops*2;
-              this.updateEmitterStatus(payload.new.SpiceObject.PlayerTwoSpice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
+              if((payload.new.TurnObject.CurrentPlayerTurn == TurnEnum.PlayerTwo)){
+                p2Water = p2Water - (waterUsed) + (numberOfPumps*5)
+                p2Spice +=1;
+                p2Credits +=2;
+                this.updateEmitterStatus(p2Spice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,p2Water,numberOfPumps,numberOfPumps*5,waterUsed,p1Water,p2Credits,eventCards,player.house);
+                return
+              }
+              this.updateEmitterStatus(p2Spice,payload.new.SpiceObject.PlayerTwoHarvesterIndices.length,0,p2Water,numberOfPumps,0,0,p1Water,p2Credits,eventCards,player.house);
             }
           }
         }
@@ -258,7 +297,6 @@ export class GameManagerService {
   endTurn(){
     this.endTurnStatus.next(true);
     this.setTurnUpdate();
-    
     const mountainObject:MountainObject={
       MountainPositions: this.MountainPositionsUpdate,
       OccupiedCells: this.OccupiedCellsUpdate,
@@ -335,7 +373,12 @@ export class GameManagerService {
   }
   //to be added once event cards are fixed
   setTurnUpdate(){
-    this.CurrentPlayerTurnUpdate=this.gameStatus.TurnObject.CurrentPlayerTurn = TurnEnum.PlayerOne?TurnEnum.PlayerTwo:TurnEnum.PlayerOne;
+    console.log("player status",this.gameStatus.TurnObject.CurrentPlayerTurn);
+    if(this.getCurrentPlayer().currentPlayer == "PlayerOne"){
+      this.CurrentPlayerTurnUpdate=TurnEnum.PlayerTwo;
+    }else{
+      this.CurrentPlayerTurnUpdate=TurnEnum.PlayerOne;
+    }
     this.EventCardsUpdate=[];
     this.Player1WinUpdate=false;
     this.Player2WinUpdate=false;

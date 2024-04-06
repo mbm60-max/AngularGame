@@ -16,6 +16,11 @@ export class DiceComponent {
   @Input() toggleTurn: boolean = false;
   constructor(private diceService: DiceService,private movementService:MovementService,private gameManager:GameManagerService) {
     this.hasRolled = this.gameManager.getTurnStatus().hasRolled;
+    this.gameManager.getGameStatusUpdates()
+      .subscribe(value => {
+        console.log("game status update",value)
+        this.hasRolled = false;//reset has rolled for both players after a turn is taken
+      });
    }
   diceValue:number=0
   
