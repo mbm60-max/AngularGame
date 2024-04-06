@@ -76,18 +76,18 @@ export class EventCardService implements OnDestroy {
     
   
   eventCardMapping: { [key: string]: Function } = {
-    "Lose 5 Credits": this.lose5Credits,
-    "Lose 10 Credits": this.lose10Credits,
-    "Gain 5 Credits": this.gain5Credits,
-    "Gain 10 Credits": this.gain10Credits,
-    "Lose 5 Water": this.lose5Water,
-    "Lose 10 Water": this.lose10Water,
-    "Gain 5 Water": this.gain5Water,
-    "Gain 10 Water": this.gain10Water,
-    "Destroy Pump": this.destroyPump,
-    "Give Pump": this.givePump,
-    "Kill Troop": this.killTroop,
-    "Gain Troop": this.gainTroop
+    "Lose 5 Credits": () => this.lose5Credits(),
+  "Lose 10 Credits": () => this.lose10Credits(),
+  "Gain 5 Credits": () => this.gain5Credits(),
+  "Gain 10 Credits": () => this.gain10Credits(),
+  "Lose 5 Water": () => this.lose5Water(),
+  "Lose 10 Water": () => this.lose10Water(),
+  "Gain 5 Water": () => this.gain5Water(),
+  "Gain 10 Water": () => this.gain10Water(),
+  "Destroy Pump": () => this.destroyPump(),
+  "Give Pump": () => this.givePump(),
+  "Kill Troop": () => this.killTroop(),
+  "Gain Troop": () => this.gainTroop(),
   };
   eventCardKeys: string[] = Object.keys(this.eventCardMapping);
   shufflePack(): string[] {
@@ -126,6 +126,7 @@ takeCard(): string {
   const card = this.cardList.shift();
   if (card) {
     const cardFunction = this.eventCardMapping[card];
+    console.log("Function is ",cardFunction)
     if (cardFunction) {
       cardFunction(); // Trigger the corresponding function from the eventCardMapping
     }
@@ -137,68 +138,49 @@ takeCard(): string {
   }
 }
   lose5Credits() {
-    const subscription = this.creditService.getCreditState().subscribe(currentCredits => {
+    let currentCredits = this.creditService.getCurrentCredits();
       this.creditService.setCreditState(currentCredits - 5);
-      subscription.unsubscribe(); 
-  });
   }
   lose10Credits() {
-    const subscription = this.creditService.getCreditState().subscribe(currentCredits => {
+    let currentCredits = this.creditService.getCurrentCredits();
       this.creditService.setCreditState(currentCredits - 10);
-      subscription.unsubscribe(); 
-  });
   }
   gain5Credits() {
-    const subscription = this.creditService.getCreditState().subscribe(currentCredits => {
+    let currentCredits = this.creditService.getCurrentCredits();
       this.creditService.setCreditState(currentCredits + 5);
-      subscription.unsubscribe(); 
-  });
   }
   gain10Credits() {
-    const subscription = this.creditService.getCreditState().subscribe(currentCredits => {
+    let currentCredits = this.creditService.getCurrentCredits();
       this.creditService.setCreditState(currentCredits + 10);
-      subscription.unsubscribe(); 
-  });
   }
 
   lose5Water() {
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.remainingWater-=5;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.remainingWater-=5;
+      
+      this.waterService.setWaterState(updatedState);
+   
   }
 
   lose10Water() {
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.remainingWater-=10;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.remainingWater-=10;
+      this.waterService.setWaterState(updatedState);
   }
 
   gain5Water() {
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.remainingWater+=5;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.remainingWater+=5;
+      
+      this.waterService.setWaterState(updatedState);
+
   }
 
   gain10Water() {
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.remainingWater+=10;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.remainingWater+=10;
+      
+      this.waterService.setWaterState(updatedState);
   }
 
   destroyPump() {
@@ -210,13 +192,10 @@ takeCard(): string {
     }
     this.removeFromLists(removeIndex);
     this.tileSpawner.setTileState(tileState);
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.numberOfPumps -=1;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.numberOfPumps -=1;
+      
+      this.waterService.setWaterState(updatedState);
   }
   givePump() {
     const newIndex = this.pickRandomIndexNotOccupied(this.occupiedIndices);
@@ -228,17 +207,15 @@ takeCard(): string {
     this.pumpIndices = [...this.pumpIndices,newIndex];
     this.occupiedIndices = [...this.occupiedIndices,newIndex];
     this.tileSpawner.setTileState(tileState);
-    const subscription = this.waterService.getWaterState().subscribe(currentState => {
-      let updateState = {...currentState};
-      updateState.numberOfPumps +=1;
-      console.log("in event Card")
-      this.waterService.setWaterState(updateState);
-      subscription.unsubscribe(); 
-  });
+    let updatedState =this.waterService.getCurrentWaterState();
+      updatedState.numberOfPumps +=1;
+      this.waterService.setWaterState(updatedState);
+ 
   }
 
   killTroop() {
     const removeIndex = this.troopIndices[this.pickRandomIndex(this.troopIndices)]
+    console.log("Remove Index",removeIndex)
     const tileState:TileUpdateState={
       src: "",
       indexTarget: removeIndex,

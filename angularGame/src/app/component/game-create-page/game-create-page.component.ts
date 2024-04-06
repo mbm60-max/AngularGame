@@ -83,7 +83,7 @@ handleStartGame(){
       PlayerTwoHarvesterIndices: [600],
       PlayerOneNumberOfHarvesters: 1,
       PlayerTwoNumberOfHarvesters: 1,
-      PlayerOneSpice:30,
+      PlayerOneSpice:49,
       PlayerTwoSpice:30,
     }, {
       CurrentPlayerTurn: TurnEnum.PlayerOne,

@@ -50,6 +50,7 @@ export class BoardComponent implements OnInit{
   harvesterPlaced:boolean=false;
   troopImageSrc:string="";
   enemyTroopImageSrc:string="";
+  updatedWaterState!:WaterState;
   constructor(private movementTrailService:MovementTrailService,private movementService:MovementService,private tileSpawnService:TileSpawnService,private gameManagerService:GameManagerService,private combatRunnerService:CombatRunnerService,private waterService:WaterService) {
   this.waterAndSpiceBoard[111]="./assets/spiceHarvester.svg"
   }
@@ -356,23 +357,19 @@ export class BoardComponent implements OnInit{
     }
     //upadte game state
     //add water ?
-    this.waterStateSubscription = this.waterService.getWaterState().subscribe((waterState: WaterState) => {
-      console.log("heres the loop")
-      const updatedWaterState = { ...waterState };
-      // Update remaining water based on the winner
-      if(this.house == "House Harkonen"){
-        if (winner != "Aggressor") {
-          updatedWaterState.opponentWater+=(enlistedTroops.length*5);
-        }
-        this.waterService.setWaterState(updatedWaterState);
+    this.updatedWaterState = this.waterService.getCurrentWaterState();
+    if(this.house == "House Harkonen"){
+      if (winner != "Aggressor") {
+        this.updatedWaterState.opponentWater+=(enlistedTroops.length*5);
       }
-      if(this.house != "House Harkonen"){
-        if (winner == "Aggressor") {
-          updatedWaterState.remainingWater+=(enlistedEnemies.length*5);
-        }
-        this.waterService.setWaterState(updatedWaterState);
+      this.waterService.setWaterState(this.updatedWaterState);
+    }
+    if(this.house != "House Harkonen"){
+      if (winner == "Aggressor") {
+        this.updatedWaterState.remainingWater+=(enlistedEnemies.length*5);
       }
-    });
+      this.waterService.setWaterState(this.updatedWaterState);
+    }
     const currentTurnStatus = this.gameManagerService.getTurnStatus();
       this.gameManagerService.setTurnStatus({
       hasMoved: currentTurnStatus.hasMoved,

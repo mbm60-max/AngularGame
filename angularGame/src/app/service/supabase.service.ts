@@ -208,4 +208,17 @@ async unsubscribeFromGameUpdates():Promise<void>{
   //
   this.supabase.removeAllChannels();
 }
+async removeGameFromGameTable(uid: string): Promise<PostgrestResponse<any> | null> {
+  try {
+    const { data, error } = await this.supabase.from('game_table').delete().eq('game_Ref', uid);
+    if (error) {
+      console.error('Error removing game session:', error.message);
+      return null;
+    }
+    return data;
+  } catch (error: any) {
+    console.error('Error removing game session:', error.message);
+    return null;
+  }
+}
 }

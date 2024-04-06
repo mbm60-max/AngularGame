@@ -120,6 +120,7 @@ export class GameManagerService {
   private eventCardStatus= new Subject<string[]>();
   private houseStatus = new Subject<string>();
   private endTurnStatus = new Subject<boolean>();
+  private endGameStatus = new Subject<string>();
   private toggleValue = false;
   constructor(private supabaseService:SupabaseService,private gameCreateService:CreateGameService) { 
 
@@ -237,8 +238,14 @@ export class GameManagerService {
           let p2Water = payload.new.PlayerObject.PlayerTwoObject.TotalWater;
           let p1Spice = payload.new.SpiceObject.PlayerOneSpice;
           let p2Spice = payload.new.SpiceObject.PlayerTwoSpice;
+          
           //this.gameStatusUpdated.next(false);
           if(player.currentPlayer=="PlayerOne"){
+            if(payload.new.TurnObject.Player1Win){
+              this.endGameStatus.next("Winner you beat the other player");
+            }else if(payload.new.TurnObject.Player2Win){
+              this.endGameStatus.next("You lost better luck nex time");
+            }
             const numberOfPumps =payload.new.PlayerObject.PlayerOneObject.WaterPumpIndices.length;
             let p1Credits = payload.new.PlayerObject.PlayerOneObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
@@ -264,6 +271,11 @@ export class GameManagerService {
               this.updateEmitterStatus(p1Spice,payload.new.SpiceObject.PlayerOneHarvesterIndices.length,0,p1Water,numberOfPumps,0,0,p2Water,p1Credits,eventCards,player.house);
             }
           }else{
+            if(payload.new.TurnObject.Player2Win){
+              this.endGameStatus.next("Winner you beat the other player");
+            }else if(payload.new.TurnObject.Player1Win){
+              this.endGameStatus.next("You lost better luck nex time");
+            }
             const numberOfPumps =payload.new.PlayerObject.PlayerTwoObject.WaterPumpIndices.length;
             let p2Credits = payload.new.PlayerObject.PlayerTwoObject.NumberOfCredits;
             if(player.house == "House Harkonen"){
@@ -334,7 +346,6 @@ export class GameManagerService {
       Player1Win: this.Player1WinUpdate,
       Player2Win: this.Player2WinUpdate,
     }
-    console.log("updated game status")
     this.supabaseService.updateGameStatus(this.gameCode,mountainObject,playersObject,spiceObject,turnObject);
   }
   setBoardUpdate(MountainPositionsUpdate:MountainPosition[],OccupiedCellsUpdate:boolean[],p1NumberOfTroopsUpdate:number,p1TroopIndicesUpdate:number[],
@@ -374,14 +385,28 @@ export class GameManagerService {
   //to be added once event cards are fixed
   setTurnUpdate(){
     console.log("player status",this.gameStatus.TurnObject.CurrentPlayerTurn);
-    if(this.getCurrentPlayer().currentPlayer == "PlayerOne"){
+    const playerData = this.getCurrentPlayer();
+    if(playerData.currentPlayer == "PlayerOne"){
       this.CurrentPlayerTurnUpdate=TurnEnum.PlayerTwo;
+      if(playerData.house == "House Harkonen" && (this.gameStatus.PlayersObject.PlayerTwoObject.NumberOfTroops<=0||this.gameStatus.SpiceObject.PlayerOneSpice>=50)){
+        this.Player1WinUpdate=true;
+        this.Player2WinUpdate=false;
+      }else if(playerData.house == "Fremen" && (this.gameStatus.PlayersObject.PlayerTwoObject.NumberOfTroops<=0)){
+        this.Player1WinUpdate=true;
+        this.Player2WinUpdate=false;
+      }
     }else{
       this.CurrentPlayerTurnUpdate=TurnEnum.PlayerOne;
+      if(playerData.house == "House Harkonen" && (this.gameStatus.PlayersObject.PlayerOneObject.NumberOfTroops<=0||this.gameStatus.SpiceObject.PlayerTwoSpice>=50)){
+        this.Player1WinUpdate=false;
+        this.Player2WinUpdate=true;
+      }else if(playerData.house == "Fremen" && (this.gameStatus.PlayersObject.PlayerOneObject.NumberOfTroops<=0)){
+        this.Player1WinUpdate=false;
+        this.Player2WinUpdate=true;
+      }
     }
-    this.EventCardsUpdate=[];
-    this.Player1WinUpdate=false;
-    this.Player2WinUpdate=false;
+    this.EventCardsUpdate=this.gameStatus.TurnObject.EventCards;
+    
   }
   unsubscribeFromGameUpdates(){
     this.supabaseService.unsubscribeFromGameUpdates();
@@ -406,6 +431,13 @@ export class GameManagerService {
   }
   alertTurnEnd() {
     return this.endTurnStatus.asObservable();
+  }
+  alertGameEnd() {
+    return this.endGameStatus.asObservable();
+  }
+  endGame(){
+    this.supabaseService.unsubscribeFromGameUpdates();
+    this.supabaseService.removeGameFromGameTable(this.gameStatus.game_code);
   }
 }
 

@@ -15,7 +15,7 @@ export interface WaterState{
 })
 export class WaterService implements OnDestroy{
   private used:number=0;
-  private currentWaterState: WaterState | null = null;
+  private currentWaterState!: WaterState;
   waterStateSubscription: Subscription | undefined;
   constructor(private gameManagerService:GameManagerService) {
    this.waterStateSubscription = this.gameManagerService.getWaterStatusUpdates().subscribe((waterState: WaterState) => {
@@ -47,11 +47,13 @@ export class WaterService implements OnDestroy{
   waterState$ = this.waterSubject.asObservable();
 
   setWaterState(waterState: WaterState) {
-    console.log("set water called")
+    console.log("set water called",waterState)
     this.currentWaterState = waterState;
     this.waterSubject.next(waterState);
   }
-
+  getCurrentWaterState(){
+    return this.currentWaterState;
+  }
   getWaterState(): Observable<WaterState> {
     return this.waterState$;
   }

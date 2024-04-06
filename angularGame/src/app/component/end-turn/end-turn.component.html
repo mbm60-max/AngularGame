@@ -1,3 +1,10 @@
-<div class="end-turn">
+<div class="end-turn" *ngIf="!canEndGame || !canLeave">
 <button [disabled]="endTurnDisabled" (click)="endTurn()">End Turn</button>
 </div>
+<div class="end-turn" *ngIf="canLeave" >
+    <button [disabled]="endTurnDisabled" (click)="leaveGame()">Leave Game</button>
+</div>
+<div class="end-turn" *ngIf="canEndGame">
+    <button [disabled]="endTurnDisabled" (click)="endGame()">End Game</button>
+</div>
+<h2 *ngIf="winStatus != ''">{{winStatus}}</h2>
