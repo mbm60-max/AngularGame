@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthProps, LoginService } from '../../service/loginservice.service';
 import { CreateGameService } from '../../service/create-game.service';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { SupabaseService } from '../../service/supabase.service';
+import { NgForOf, NgIf } from '@angular/common';
+import { MatGridListModule } from '@angular/material/grid-list';
+import { Tile } from '../navbar/navbar.component';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [],
+  imports: [MatGridListModule,NgForOf,NgIf],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
@@ -19,11 +22,26 @@ export class HomeComponent implements OnInit {
     inGame: false,
     isLoggedIn: false,
   };
-
+  tilesLeft: Tile[] = [];
+  tilesRight: Tile[] = [];
   constructor(private loginService: LoginService, private router: Router,private supabaseService:SupabaseService) {
+    this.updateTiles(); // Initially update tiles
+  }
+  
+  updateTiles() {
+    this.tilesLeft = [
+    ];
+    this.tilesRight =[
+      { text: 'Home', cols: 2, rows: 1,link: '/home' },
+      {text: 'About', cols: 2, rows: 1,link: '/home' },
+      {text: 'SUPPORT', cols: 2, rows: 1,link: '/home' },
+      {text: 'GITHUB', cols: 2, rows: 1,link: 'https://github.com/mbm60-max/AngularGame' },
+      {text: 'LICENSE', cols: 2, rows: 1,link: '/home' },
+    ]
   }
   ngOnInit() {
     this.authStatus = this.loginService.getStatus();
+    this.updateTiles(); 
   }
   handleCreateGame(){
     this.router.navigate(['/gameCreate']);

@@ -6,7 +6,6 @@ import { NgForOf, NgIf } from '@angular/common';
 import { SupabaseService } from '../../service/supabase.service';
   
   export interface Tile {
-    color: string;
     cols: number;
     rows: number;
     text: string;
@@ -28,7 +27,8 @@ export class NavbarComponent implements OnInit {
     isLoggedIn: false,
   };
 
-  tiles: Tile[] = [];
+  tilesLeft: Tile[] = [];
+  tilesRight: Tile[] = [];
 
   constructor(private loginService: LoginService, private router: Router,private supabase:SupabaseService) {
     this.updateTiles(); // Initially update tiles
@@ -40,11 +40,16 @@ export class NavbarComponent implements OnInit {
 
   }
   updateTiles() {
-    this.tiles = [
-      { text: 'Home', cols: 2, rows: 1, color: 'lightblue', link: '/home' },
-      { text: this.authStatus.isLoggedIn ? 'Logout' : 'Login', cols: 2, rows: 1, color: 'lightgreen', link: '/login' }
+    this.tilesLeft = [
+      { text: 'Home', cols: 2, rows: 1,link: '/home' },
+      {text: 'Play', cols: 2, rows: 1,link: '/home' },
+      {text: 'About', cols: 2, rows: 1,link: '/home' },
     ];
+    this.tilesRight =[
+      { text: this.authStatus.isLoggedIn ? 'Logout' : 'Login', cols: 4, rows: 1,link: '/login' }
+    ]
   }
+ 
 
   logout() {
     this.supabase.signOut();

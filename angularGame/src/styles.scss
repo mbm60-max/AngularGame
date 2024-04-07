@@ -1,4 +1,162 @@
 /* You can add global styles to this file, and also import other style files */
 
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { margin: 0; }
+
+@font-face {
+    font-family: 'Roashe';
+    src: url('./assets/fonts/Roashe/Roashe.otf');
+}
+@font-face {
+    font-family:'Gaia';
+    src: url('./assets/fonts/Gaia.otf');
+}
+@font-face {
+    font-family: 'Archivo';
+    src: url('./assets/fonts/Archivo/Fonts/OTF/Archivo-Black.otf');
+}
+@font-face {
+    font-family: 'Archivo-Bold';
+    src: url('./assets/fonts/Archivo/Fonts/OTF/Archivo-Bold.otf');
+}
+@font-face {
+    font-family: 'Archivo-Thin';
+    src: url('./assets/fonts/Archivo/Fonts/OTF/Archivo-Thin.otf');
+}
+/* You can add global styles to this file, and also import other style files */
+
+html, body {
+    height: 100%;
+    margin: 0;
+  }
+  
+  .title {
+    font-family: 'Roashe', sans-serif;
+    font-size: 25rem;
+    color: rgba(255, 255, 255, 0.8); // Change color as needed
+    padding-top: 75px;
+    padding-bottom: 0px;
+  }
+
+
+  @media screen and (max-width: 1170px) {
+    .title {
+        font-size: 20rem; /* Adjust font size for smaller screens */
+    }
+}
+@media screen and (max-width: 768px) {
+    .title {
+        font-size: 15rem; /* Adjust font size for smaller screens */
+    }
+    .header.archivo {
+        font-size: 2.5rem!important; padding-top: 150px!important; /* Further adjust font size for even smaller screens */
+    }
+}
+
+@media screen and (max-width: 576px) {
+    .title {
+        font-size: 10rem; /* Further adjust font size for even smaller screens */
+    }
+    
+}
+
+  .header {
+    color:rgba(255, 255, 255, 0.6);
+    &.archivo {
+      font-family: 'Archivo-Thin', sans-serif;
+      font-size: 3.5em; padding-top: 200px;
+    }
+    &.roashe {
+      font-family: 'Roashe', sans-serif;
+    }
+    &.gaia {
+      font-family: 'Gaia', sans-serif;
+      font-size: 2em;
+      padding-top: 20px;
+      padding-bottom: 350px;
+    }
+  }
+  
+  .text { // Or any default font family you prefer
+    font-size: 16px;
+    color: #555; // Change color as needed
+    &.archivo {
+        font-family: 'Archivo', sans-serif;
+    }
+    &.roashe {
+        font-family: 'Roashe', sans-serif;
+    }
+    &.gaia {
+        font-family: 'Gaia', sans-serif;
+    }
+  }
+  
+  .navbar-text {
+    font-family: 'Archivo-Black', sans-serif;
+    font-size:2em;
+    color: #F6E8DE;
+    text-decoration: none;
+    font-weight: none;
+    // Add navbar styles here
+  }
+  
+  .navbar-button {
+    height: 50px;
+    width: 10em;
+    border: none;
+    border-radius: 0.5em;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:transparent;
+    &:hover {
+      background-color: rgba(217, 217, 217, 0.3); // Change hover background color as needed
+    }
+  }
+  .footer-button{
+    z-index: 1;
+    height: 50px;
+    width: 10em;
+    border: none;
+    border-radius: 0.5em;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:transparent;
+    &:hover {
+        background-color:#C6834E; // Change hover background color as needed
+    }
+  }
+  .footer-text{
+    z-index: 1;
+    font-family: 'Gaia', sans-serif;
+    font-size:4.5em;
+    color: #000000;
+    text-decoration: none;
+    font-weight: none;
+  }
+  .button {
+    z-index: 1;
+    height: 50px;
+    width: 10em;
+    border: none;
+    border-radius: 0.5em;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#C6834E;
+    &:hover {
+      background-color: rgba(217, 217, 217, 0.3); // Change hover background color as needed
+    }
+  }
+  .button-text{
+        font-family: 'Gaia', sans-serif;
+        font-size:2em;
+        color: #EFD4BD;
+        text-decoration: none;
+        font-weight: none;
+  }
+  
