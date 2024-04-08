@@ -53,7 +53,7 @@ export class TileSpawnerComponent implements OnInit,OnDestroy {
   }
   isDisabled(index: number): boolean {
     if(!this.toggleTurn){
-      return true;
+      return false;
     }
     if(this.tileType[index]=="Spice Harvester" && this.harvesterDisabled){
       return true;

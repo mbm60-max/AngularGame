@@ -1,4 +1,39 @@
 <div class="playerInfo-container">
-    <h1>Current Player:{{currentPlayer}}</h1>
-    <h2>Current House:{{house}}</h2>
+    <div class="game-container">
+        <p class="game-text">
+            CURRENT GAME 
+        </p>
+    </div>
+    <div class="player-container">
+        <div class="profile-container">
+            <p  *ngIf="currentPlayer =='PlayerOne'"class="player-text" >
+                YOU
+            </p>
+            <p *ngIf="currentPlayer !='PlayerOne'"class="player-text">
+               PLAYER ONE
+            </p>
+            <div class="image">image</div>
+            <p  *ngIf="currentPlayer =='PlayerOne'" class="house-text">
+                {{house}}
+            </p>
+            <p  *ngIf="currentPlayer !='PlayerOne'" class="house-text">
+                {{notHouse}}
+            </p>
+        </div>
+        <div class="profile-container">
+            <p *ngIf="currentPlayer =='PlayerTwo'" class="player-text">
+                YOU
+            </p>
+            <p *ngIf="currentPlayer!='PlayerTwo'" class="player-text">
+             PLAYER TWO
+            </p>
+            <div class="image">image</div>
+            <p  *ngIf="currentPlayer !='PlayerOne'" class="house-text">
+                {{house}}
+            </p>
+            <p  *ngIf="currentPlayer =='PlayerOne'" class="house-text">
+                {{notHouse}}
+            </p>
+        </div>
+    </div>
 </div>

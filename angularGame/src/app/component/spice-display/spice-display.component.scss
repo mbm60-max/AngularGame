@@ -1,27 +1,70 @@
-.spice-display-container {
+
+  .spice-display-container {
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 900px; /* Adjust as needed */
-    left: 900px; /* Adjust as needed */
+    top: 720px; /* Adjust as needed */
+    left: 550px; /* Adjust as needed */
   }
   
   .spice-bar {
     height: 20px;
-    background-color: yellow;
+    z-index: 4;
+    width:400px;
+    height: 35px;
+    background-color: rgb(210, 244, 255);
     margin-bottom: 10px;
+    border-radius: 5px;
+    
+  }
+  
+  .spice-bar-inner {
+  z-index:5;
+    height: 20px;
+    width:300px;
+    height: 35px;
+    background: linear-gradient(to right, 
+    rgba(243, 190, 1, 1) 0%,     /* Start color at 0% */
+    rgba(181, 87, 1, 1) 50%,  /* Color change at 50% */
+    rgba(158, 38, 0, 1) 100%   /* End color at 100% */
+    );
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: right;
+ 
+  }
+  .spice-label, .spice-text {
+    position: absolute;
+    height: 100%; /* Ensure full height */
+    display: flex;
+    align-items:center; /* Vertically center text */
+    height: 35px;
+  }
+  
+  .spice-label {
+    color: #471f13;
+    left: 0; /* Position on the left */
+    margin-left: 10px;
+    font-family: "Gaia";
+    font-size: 2em;
   }
   
   .spice-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: black;
+    color: #471f13;
+    right: 0; /* Position on the right */
+    margin-right: 10px;
+    font-family: "Gaia";
+    font-size: 2em;
   }
-  
+  .details-text{
+  font-family:'Archivo-Bold';
+  font-size: 1.15em;
+  color: white;
+  }
   .spice-details {
-    display: flex;
     justify-content: space-between;
+      display: flex;
+    flex-direction: row;
+    align-items: center;
   }
   

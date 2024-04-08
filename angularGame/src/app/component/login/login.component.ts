@@ -23,6 +23,7 @@ export class LoginComponent {
     this.auth.signIn(this.loginForm.value.email,this.loginForm.value.password).then((res: any)=>{
       if(res.data.user!.role == "authenticated"){
         const { name, id, email } = res.data.user;
+        console.log("auth")
       this.router.navigate(['/home']);
       this.loginService.setAuth({ name, id, email,inGame:false,isLoggedIn:true });
       }
@@ -30,5 +31,8 @@ export class LoginComponent {
       console.log(err);
     })
   } 
+  onRegister(){
+    this.router.navigate(['/register']);
+  }
   //meed to add email confirm nots
 }

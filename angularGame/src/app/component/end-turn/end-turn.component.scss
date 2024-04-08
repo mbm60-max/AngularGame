@@ -1,5 +1,33 @@
-.end-turn {
+
+  .end-turn{
     position: absolute;
-    top: 400px; /* Adjust as needed */
-    left: 1100px; /* Adjust as needed */
+    top: 630px; /* Adjust as needed */
+    left: 50px; /* Adjust as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 13.5em;
+    height: 11em;
+    background-color: #73321E;
+    border-radius: 10px;
+      z-index: 9!important;
+  }
+  .end-button{
+    z-index: 1;
+    width: 4.5em;
+    height: 3.5em;
+    border: none;
+    border-radius: 0.25em;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:transparent;
+    border: 1.5px solid #B55701;
+    &:hover {
+        background-color:#f3ab74; // Change hover background color as needed
+    }
+    font-family: "Gaia";
+    font-size: 40px;
+    color: white;
   }

@@ -1,11 +1,16 @@
-<div class="spice-display-container">
-    <div class="spice-bar" [style.width.%]="remainingSpice">
-      <span class="spice-text">{{ remainingSpice }}%</span>
-    </div>
-    <div class="spice-details">
-      <p>Harvesters: {{ numberOfHarvesters }}</p>
-    </div>
-    <div class="spice-details">
-        <p>Harvested: + {{ spiceGenerated }}</p>
+  <div class="spice-display-container">
+    <div class="spice-bar">
+      <div class="spice-bar-inner" [style.width.%]="remainingSpice > 50 ? 100 : (remainingSpice * 2)">
+        <span class="spice-label">SPICE</span>
+        <span class="spice-text">{{ remainingSpice }}/50</span>
+      </div>
+      <div class="spice-details">
+        <div class="spice-details">
+          <p class="details-text">Harvesters: {{ numberOfHarvesters }}</p>
+        </div>
+        <div class="spice-details">
+          <p class="details-text">Extracted: + {{ spiceGenerated }}</p>
+        </div>
       </div>
   </div>
+    </div>

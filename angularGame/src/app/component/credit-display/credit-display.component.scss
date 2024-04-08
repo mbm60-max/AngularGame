@@ -2,6 +2,23 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 800px; /* Adjust as needed */
-    left: 1000px; /* Adjust as needed */
+    top: 630px; /* Adjust as needed */
+    left: 400px; /* Adjust as needed */
+    background-color: #73321E;
+    width:8em;
+    height: 11em;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
+  }
+  .credits-title{
+  font-family: "Gaia";
+    font-size: 2.5em;
+    color: white;
+    margin-bottom: 60px;
+  }
+  .credits-value{
+    font-family: "Gaia";
+    font-size: 4em;
+    color: white;
   }

@@ -1,29 +1,29 @@
 .board {
-    top: 0;
-    left: 0;
+    top: 20px;
+    left: 50px;
     display: grid;
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
     height: 800px;
     position:  absolute;
-    z-index:0;
+    z-index:9!important;
   }
   .enemy-board {
-    top: 0;
-    left: 0;
+    top: 20px;
+    left: 50px;
     display: grid;
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
     height: 800px;
     position:  absolute;
-    z-index:-1;
+    z-index:8!important;
   }
   
   
   .cell {
-    border: 1px solid #F0F0F6;
+    border: 1px solid #eeeeee;
   }
   .layer-image {
     margin-left: -1px; /* Adjust left position as needed */
@@ -33,7 +33,7 @@
     position: absolute; /* Position the mountain container absolutely */
     top: 0; /* Adjust top/left position as needed */
     left: 0;
-    z-index:-4;
+    z-index:7!important;
   }
   .sand-container {
     top: 0;
@@ -44,7 +44,7 @@
     width: 800px;
     height: 800px;
     position: absolute;
-    z-index:-10;
+    z-index:5!important;
   }
   .spice-container {
     top: 0;
@@ -55,10 +55,10 @@
     width: 800px;
     height: 800px;
     position: absolute;
-    z-index:10;
+    z-index:10!important;
   }
 
   .mountain-image {
     position: absolute; /* Position the mountain image absolutely */
-    z-index: -4; /* Set a lower z-index */
+    z-index: 7!important;/* Set a lower z-index */
   }

@@ -1,10 +1,52 @@
 .turnBox{
     position: absolute;
-    top: 600px; /* Adjust as needed */
-    left: 900px; /* Adjust as needed */
+    top: 20px; /* Adjust as needed */
+    left: 50px; /* Adjust as needed */
+    width:1080px;
+    height:600px;
+    background-color: rgb(172, 172, 172,0.8);
+    cursor: not-allowed; 
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    z-index: 12;
 }
 .event-cards {
     position: absolute;
     top: 200px; /* Adjust as needed */
     left: 1100px; /* Adjust as needed */
   }
+  .wait-text{
+    font-family: "Gaia";
+    font-size: 5em;
+    color:#904945;
+  }
+.side-bar{
+width:55px;
+height: 100%;
+border: 3px solid black;
+background: linear-gradient(180deg,rgba(103, 38, 36, 1)    ,rgba(211, 118, 77, 1));
+filter: blur(10px);
+}
+.hamburger{
+z-index: 15!important;
+position: absolute;
+top:10px;
+left:10px;
+width:50px;
+justify-content: center;
+display: flex;
+}
+.burger{
+  background-image: url('../../../assets/hamburger.svg');
+  width: 20%;
+  background-size: cover;
+  height:40px;
+}
+.game-background{
+ 
+    position: absolute!important;
+    width:100%;
+    height: 100%;
+    background: linear-gradient(180deg,rgba(103, 38, 36, 1)    ,rgba(211, 118, 77, 1));
+}

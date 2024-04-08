@@ -435,9 +435,9 @@ export class GameManagerService {
   alertGameEnd() {
     return this.endGameStatus.asObservable();
   }
-  endGame(){
+  endGame(id:string){
     this.supabaseService.unsubscribeFromGameUpdates();
-    this.supabaseService.removeGameFromGameTable(this.gameStatus.game_code);
+    this.supabaseService.removeGameFromGameTable(id);
   }
 }
 

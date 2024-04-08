@@ -116,7 +116,7 @@ html, body {
   }
   .footer-button{
     z-index: 1;
-    height: 50px;
+    height: 60px;
     width: 10em;
     border: none;
     border-radius: 0.5em;
@@ -160,3 +160,90 @@ html, body {
         font-weight: none;
   }
   
+  .glass{
+    background: linear-gradient(135deg, rgba(255,255,255,0.1),rgba(255,255,255,0));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.glass-alt{
+    background: linear-gradient(135deg,rgba(218, 218, 218, 0.8),rgba(218, 218, 218, 0.5));
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.18);
+    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container{
+    width: 70em;
+    height: 40em;
+    margin:50px auto;
+}
+.background-container{
+    display: flex;
+    align-items: center;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #5b2D20,#C7844D);
+}
+.button-alt {
+    z-index: 1;
+    height: 50px;
+    width: 10em;
+    border: none;
+    border-radius: 0.5em;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:#7C482E;
+    &:hover {
+      background-color: rgba(217, 217, 217, 1); // Change hover background color as needed
+    }
+  }
+  .register-button{
+    z-index: 1;
+    height: 30px;
+    width: 10em;
+    border: none;
+    border-radius: 0.5em;
+    margin-top: 10px;
+    transition: background-color 0.3s ease;
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    background-color:transparent;
+    &:hover {
+      background-color: #7C482E; // Change hover background color as needed
+    }
+  }
+  .button-text-alt{
+        font-family: 'Archivo-Thin', sans-serif;
+        font-size:2em;
+        color: #DEDEDE;
+        text-decoration: none;
+        font-weight: none;
+        &:hover {
+            color: black; // Change hover background color as needed
+          }
+  }
+  .register-text{
+    font-family: 'Archivo-Thin', sans-serif;
+    font-size:1.5em;
+    color: #DEDEDE;
+    text-decoration: none;
+    font-weight: none;
+    color: black; // Change hover background color as needed
+    &:hover {
+        color: #DEDEDE; // Change hover background color as needed
+      }
+}

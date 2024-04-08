@@ -41,12 +41,11 @@ export class NavbarComponent implements OnInit {
   }
   updateTiles() {
     this.tilesLeft = [
-      { text: 'Home', cols: 2, rows: 1,link: '/home' },
-      {text: 'Play', cols: 2, rows: 1,link: '/home' },
-      {text: 'About', cols: 2, rows: 1,link: '/home' },
+      { text: 'HOME', cols: 2, rows: 1,link: '/home' },
+      {text: 'RULES', cols: 2, rows: 1,link: '/home' },
     ];
     this.tilesRight =[
-      { text: this.authStatus.isLoggedIn ? 'Logout' : 'Login', cols: 4, rows: 1,link: '/login' }
+      { text: this.authStatus.isLoggedIn ? 'LOGOUT' : 'LOGIN', cols: 4, rows: 1,link: '/login' }
     ]
   }
  

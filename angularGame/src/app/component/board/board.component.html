@@ -1,3 +1,4 @@
+
 <div class="board" cdkDropListGroup>
       <div class="cell"
       *ngFor="let cell of board; let i = index"
@@ -59,15 +60,7 @@
       [style.height.px]="30"
     >
   </div>
-  <div class="blue-cell" *ngFor="let cell of mountainBoard; let i = index">
-    <img *ngIf="cell === true"
-      src="/assets/waterPump.svg"
-      width="30px"
-      height="30px"
-      [style.width.px]="30"
-      [style.height.px]="30"
-    >
-  </div>
+ 
 </div>
 
   

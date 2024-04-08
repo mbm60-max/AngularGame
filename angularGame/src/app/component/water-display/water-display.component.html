@@ -1,14 +1,19 @@
 <div class="water-display-container">
-    <div class="water-bar" [style.width.%]="remainingWater">
-      <span class="water-text">{{ remainingWater }}%</span>
+  <div class="water-bar">
+    <div class="water-bar-inner" [style.width.%]="remainingWater > 100 ? 100 : remainingWater" >
+      <span class="water-label">WATER</span>
+      <span class="water-text">{{ remainingWater }}/100</span>
     </div>
     <div class="water-details">
-      <p>Pumps: {{ numberOfPumps }}</p>
-    </div>
-    <div class="water-details">
-        <p>Extracted: + {{ waterGenerated }}</p>
+      <div class="water-details">
+        <p class="details-text">Pumps: {{ numberOfPumps }}</p>
       </div>
       <div class="water-details">
-        <p>Consumed: - {{ waterUsed }}</p>
+        <p class="details-text">Extracted: + {{ waterGenerated }}</p>
       </div>
+      <div class="water-details">
+        <p class="details-text">Consumed: - {{ waterUsed }}</p>
+      </div>
+    </div>
+</div>
   </div>

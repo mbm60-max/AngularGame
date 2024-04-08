@@ -1,5 +1,54 @@
 .playerInfo-container {
     position: absolute;
-    top: 600px; /* Adjust as needed */
-    left: 300px; /* Adjust as needed */
+    top:30px; /* Adjust as needed */
+    right: 50px; /* Adjust as needed */
+    width:15em;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+    height: 25em;
+    flex-direction: column;
+  }
+  .game-container{
+    background: linear-gradient(180deg,rgba(105, 40, 37, 1),rgba(164, 109, 104, 1));
+    height: 40%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px 10px 0px 0px;
+  }
+  .player-container{
+    background: rgba(164, 109, 104, 1);
+    height: 60%;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    border-radius: 0px 0px 10px 10px;
+    flex-direction: column;
+    align-items: center;
+  }
+  .game-text{
+font-family: "Gaia";
+font-size: 3em;
+color: white;
+margin-bottom: 15px;
+  }
+  .player-text{
+text-align: right;
+font-family: "Gaia";
+font-size: 1.5em;
+color: white;
+  }
+  .house-text{
+    text-align: right;
+    font-family: "Archivo-Bold";
+    font-size: 1em;
+    color: #582A29;
+  }
+  .image{
+    width: 13em;
+    height: 3em;
+    background-color: red;
+    border-radius: 10px;
   }

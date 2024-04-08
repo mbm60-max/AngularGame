@@ -1,16 +1,27 @@
-<p>game works!</p>
-<app-board [lastRoll]="lastRoll" ></app-board>
-<app-dice [toggleTurn]="toggleTurn"></app-dice>
-<app-spice-display></app-spice-display> 
-<app-move-display></app-move-display>
-<app-tile-spawner [toggleTurn]="toggleTurn"></app-tile-spawner>
-<app-current-player></app-current-player>
-<div class="turnBox">
-    <h2>Is it your turn ?:{{toggleTurn}}</h2>
+<div class="game-background">
+    <div class="side-bar">
+        </div>
+        <div class="hamburger">
+            <button class="burger" mat-button [matMenuTriggerFor]="menu"></button>
+            <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="navigate('home')">Exit</button>
+            <button mat-menu-item (click)="navigate('rules')">Rules</button>
+            </mat-menu>
+    </div>
+    <app-board [lastRoll]="lastRoll" ></app-board> 
+    <app-dice *ngIf="toggleTurn" [toggleTurn]="toggleTurn"></app-dice>
+    
+    <app-move-display></app-move-display>
+    <app-current-player></app-current-player>
+    <div *ngIf="!toggleTurn"class="turnBox">
+        <p class="wait-text">WAITING FOR YOUR TURN...</p>
+    </div>
+    <app-spice-display></app-spice-display> 
+    <app-water-display></app-water-display>
+    <app-credit-display></app-credit-display>
+    <app-tile-spawner [toggleTurn]="toggleTurn"></app-tile-spawner>
+    <div class="event-cards">
+        <app-event-card-deck [toggleTurn]="toggleTurn"></app-event-card-deck>
+    </div>
+    <app-end-turn></app-end-turn>
 </div>
-<app-water-display></app-water-display>
-<app-credit-display></app-credit-display>
-<div class="event-cards">
-    <app-event-card-deck [toggleTurn]="toggleTurn"></app-event-card-deck>
-</div>
-<app-end-turn></app-end-turn>

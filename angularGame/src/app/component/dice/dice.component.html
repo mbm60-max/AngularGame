@@ -1,5 +1,27 @@
-<div class="dice-container">
-<button [disabled]="hasRolled || !toggleTurn"  (click)="rollDice()">Roll Dice</button>
-<p *ngIf="diceValue !== null">Dice Value: {{ diceValue }}</p>
-<p>Has Rolled:{{hasRolled}}</p>
+<div  *ngIf="!animationFinished"class="dice-container" >
+  <div class="container">
+    <div #dice class="dice" *ngIf="!animationFinished" [@diceAnimation]="diceValue">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+    </div>
+    <div class="dice" *ngIf="!animationFinished" [@diceAnimation]="secondDiceValue">
+      <div class="face front"></div>
+      <div class="face back"></div>
+      <div class="face top"></div>
+      <div class="face bottom"></div>
+      <div class="face right"></div>
+      <div class="face left"></div>
+    </div>
+  </div>
 </div>
+<div *ngIf="!hasRolled" class="button-container">
+  <button class="roll" (click)="randomDice()">
+    Roll Dice
+  </button>
+</div>
+
+  

@@ -13,11 +13,14 @@ import { CreditDisplayComponent } from '../credit-display/credit-display.compone
 import { NgIf } from '@angular/common';
 import { EventCardDeckComponent } from '../event-card-deck/event-card-deck.component';
 import { EndTurnComponent } from '../end-turn/end-turn.component';
-
+import { DiceTestComponent } from '../dice-test/dice-test.component';
+import {MatMenuModule} from '@angular/material/menu';
+import {MatButtonModule} from '@angular/material/button';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [BoardComponent,DiceComponent,MoveDisplayComponent,TileSpawnerComponent,CurrentPlayerComponent,WaterDisplayComponent,SpiceDisplayComponent,CreditDisplayComponent,NgIf,EventCardDeckComponent,EndTurnComponent],
+  imports: [BoardComponent,DiceComponent,MoveDisplayComponent,TileSpawnerComponent,CurrentPlayerComponent,WaterDisplayComponent,SpiceDisplayComponent,CreditDisplayComponent,NgIf,EventCardDeckComponent,EndTurnComponent,MatButtonModule, MatMenuModule],
   templateUrl: './game.component.html',
   styleUrl: './game.component.scss'
 })
@@ -26,7 +29,7 @@ export class GameComponent implements OnDestroy,OnInit{
   toggleTurn: boolean=false;
   currentHouse:string="";
   private toggleSubscription!: Subscription;
-  constructor(private diceService: DiceService,private gameManagerService:GameManagerService) {
+  constructor(private diceService: DiceService,private gameManagerService:GameManagerService,private router:Router) {
     this.diceService.diceRoll$.subscribe(value => {
       this.lastRoll = value;
     });
@@ -52,6 +55,16 @@ export class GameComponent implements OnDestroy,OnInit{
         this.toggleTurn = value;
         // Do something with the updated value
       });
+  }
+  navigate(path:string){
+    switch(path){
+      case 'home':
+        this.router.navigate(['/home']);
+        break;
+      case 'rules':
+        window.open('/rules', '_blank');
+        break;  
+    }
   }
    //setSpiceState
   //setWaterState

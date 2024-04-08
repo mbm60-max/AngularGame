@@ -38,21 +38,7 @@
     align-items: center;
     justify-content: center;
 }
-.glass{
-    background: linear-gradient(135deg, rgba(255,255,255,0.1),rgba(255,255,255,0));
-    backdrop-filter: blur(10px);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.18);
-    box-shadow: 0 8px 32px 0 rgba(0,0,0,0.37);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-.container{
-    width: 70em;
-    height: 40em;
-    margin:50px auto;
-}
+
 .tutorial-text{
     font-family: 'Roashe';
     font-size: 5.5rem;
@@ -87,6 +73,7 @@
     justify-content: center;
     align-items: center;
     background-color: #5b2D20;
+    border-radius: 10px;
 }
 .info-div{
     text-align: left; 

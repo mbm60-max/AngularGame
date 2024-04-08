@@ -2,26 +2,68 @@
     display: flex;
     flex-direction: column;
     position: absolute;
-    top: 700px; /* Adjust as needed */
-    left: 900px; /* Adjust as needed */
+    top: 650px; /* Adjust as needed */
+    left: 550px; /* Adjust as needed */
   }
   
   .water-bar {
     height: 20px;
-    background-color: lightblue;
+    z-index: 4;
+    width:400px;
+    height: 35px;
+    background-color: rgb(210, 244, 255);
     margin-bottom: 10px;
+    border-radius: 5px;
+    
+  }
+  
+  .water-bar-inner {
+  z-index: 5;
+    height: 20px;
+    width:300px;
+    height: 35px;
+    background: linear-gradient(to right, 
+    rgba(1, 186, 243, 1) 0%,     /* Start color at 0% */
+    rgba(1, 107, 181, 1) 50%,  /* Color change at 50% */
+    rgba(0, 88, 158, 1) 100%   /* End color at 100% */
+    );
+    margin-bottom: 10px;
+    border-radius: 5px;
+    text-align: right;
+ 
+  }
+  .water-label, .water-text {
+    position: absolute;
+    height: 100%; /* Ensure full height */
+    display: flex;
+    align-items:center; /* Vertically center text */
+    height: 35px;
+  }
+  
+  .water-label {
+    color: #471f13;
+    left: 0; /* Position on the left */
+    margin-left: 10px;
+    font-family: "Gaia";
+    font-size: 2em;
   }
   
   .water-text {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    color: white;
+    color: #471f13;
+    right: 0; /* Position on the right */
+    margin-right: 10px;
+    font-family: "Gaia";
+    font-size: 2em;
   }
-  
+  .details-text{
+  font-family:'Archivo-Bold';
+  font-size: 1.15em;
+  color: white;
+  }
   .water-details {
-    display: flex;
     justify-content: space-between;
+      display: flex;
+    flex-direction: row;
+    align-items: center;
   }
   

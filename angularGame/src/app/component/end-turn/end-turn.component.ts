@@ -4,6 +4,7 @@ import { Subscription } from 'rxjs';
 import { MovementService } from '../../service/movement-service.service';
 import { Router } from '@angular/router';
 import { NgIf } from '@angular/common';
+import { AuthProps, LoginService } from '../../service/loginservice.service';
 
 @Component({
   selector: 'app-end-turn',
@@ -21,7 +22,15 @@ winStatus:string="";
 currentPlayer:string="";
 canLeave:boolean=false;
 canEndGame:boolean=false;
-constructor(private gameManagerService:GameManagerService,private movementService:MovementService,private router:Router){
+authStatus: AuthProps = {
+  email: '',
+  name: '',
+  id: '',
+  inGame: false,
+  isLoggedIn: false,
+};
+constructor(private gameManagerService:GameManagerService,private movementService:MovementService,private router:Router,private loginService:LoginService){
+  this.authStatus = this.loginService.getStatus();
 }
 ngOnInit(): void {
   this.toggleSubscription = this.gameManagerService.getGameStatusUpdates()
@@ -46,10 +55,11 @@ ngOnDestroy(): void {
   this.endSubscription.unsubscribe();
 }
 endGame(){
-  this.gameManagerService.endGame();
+  this.gameManagerService.endGame(this.authStatus.id);
   this.router.navigate(['/home']);
 }
 leaveGame(){
+  console.log("leave game called");
   this.router.navigate(['/home']);
 }
 endTurn(){

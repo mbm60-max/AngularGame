@@ -1,42 +1,61 @@
 .tileSpawner-container {
-    position: absolute;
-    top: 600px; /* Adjust as needed */
-    left: 200px; /* Adjust as needed */
-    display: flex;
-    flex-direction: column;
+  position: absolute;
+  top: 630px; /* Adjust as needed */
+  left: 250px; /* Adjust as needed */
+  display: flex;
+  flex-direction: column;
+  width: 10em;
+  height: 11em;
+  background-color: #73321E;
+  border-radius: 10px;
+    z-index: 9!important;
+}
+
+.text-style{
+  font-family: "Gaia";
+    font-size: 1.75em;
+    color: white;
+    margin-top: 35px;
   }
-  .tile-wrapper {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-bottom: 10px;
-    cursor: pointer;
-    &.selected {
-        // Your existing styles for selected tile-wrapper
-      }
-    
-      .layer-image {
-        // Your existing styles for layer-image
-    
-        &.disabled {
-          // Your styles for disabled state
-          opacity: 0.5; // Example: reduce opacity to indicate disabled state
-          pointer-events: none; // Disable pointer events
-        }
-      }
-  }
-  
-  .tile-wrapper.selected {
-    background-color: lightblue;
-  }
-  
-  .tile-label {
-    font-size: 12px;
-  }
-  
-  .no-items-selected {
-    font-size: 14px;
-    text-align: center;
-    margin-bottom: 10px;
-  }
-  
+.selected-tile-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.tiles-row {
+margin-top: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.tile-wrapper {
+margin-left: 5px;
+margin-right: 5px;
+  cursor: pointer;
+}
+
+.tile-label {
+  font-size: 12px;
+}
+
+
+.layer-image {
+  /* Your existing styles for layer-image */
+}
+
+.tile-wrapper.selected .layer-image {
+  width: 60px; /* Larger width for selected image */
+  height: 60px; /* Larger height for selected image */
+}
+
+.tile-wrapper.selected .tile-label {
+  font-weight: bold; /* Bold label for selected tile */
+}
+
+.tile-button {
+  margin-top: 5px;
+}
