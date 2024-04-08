@@ -6,6 +6,7 @@
 /out-tsc
 /bazel-out
 
+
 # Node
 /node_modules
 npm-debug.log
@@ -38,6 +39,7 @@ testem.log
 /typings
 
 # System files
+.env
 .DS_Store
 Thumbs.db
 src/environments
