@@ -40,7 +40,6 @@ export class DiceComponent {
     this.hasRolled = this.gameManager.getTurnStatus().hasRolled;
     this.gameManager.getGameStatusUpdates()
       .subscribe(value => {
-        console.log("game status update",value)
         this.hasRolled = false;//reset has rolled for both players after a turn is taken
         this.animationFinished = false;
         this.diceValue=0;
@@ -55,8 +54,6 @@ export class DiceComponent {
   randomDice() {
     this.diceValue = Math.floor(Math.random() * 6) + 1;
     this.secondDiceValue = Math.floor(Math.random() * 6) + 1;
-    console.log(this.diceValue)
-    console.log(this.secondDiceValue)
     const totalRoll = this.diceValue+this.secondDiceValue;
     this.movementService.setRemainingMoves(totalRoll);
     this.diceService.rollDice(totalRoll);

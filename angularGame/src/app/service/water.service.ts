@@ -19,12 +19,10 @@ export class WaterService implements OnDestroy{
   waterStateSubscription: Subscription | undefined;
   constructor(private gameManagerService:GameManagerService) {
    this.waterStateSubscription = this.gameManagerService.getWaterStatusUpdates().subscribe((waterState: WaterState) => {
-    console.log("emitter triggered update")
     this.setWaterState(waterState);
    });
    this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
     if(isEnded){
-      console.log("ended called")
       const waterUpdate = this.getWaterUpdate();
       gameManagerService.setWaterUpdate(waterUpdate.playerOneWater?waterUpdate.playerOneWater:-1,waterUpdate.playerTwoWater?waterUpdate.playerTwoWater:-1);
     }
@@ -47,7 +45,6 @@ export class WaterService implements OnDestroy{
   waterState$ = this.waterSubject.asObservable();
 
   setWaterState(waterState: WaterState) {
-    console.log("set water called",waterState)
     this.currentWaterState = waterState;
     this.waterSubject.next(waterState);
   }

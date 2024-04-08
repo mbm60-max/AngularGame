@@ -50,7 +50,6 @@ export class UnitCreditsService implements OnDestroy{
   creditState$ = this.creditSubject.asObservable();
 
   setCreditState(creditState:number) {
-    console.log("set credit called",creditState)
     this.currentCredit=creditState;
     this.creditSubject.next(creditState);
   }

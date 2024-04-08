@@ -64,7 +64,6 @@ export class MapGeneratorService {
     const randomRotation = rotations[Math.floor(Math.random() * rotations.length)];
   
     for (let i = 0; i < numberToGenerate; i++) {
-      console.log(`trying to generate ${i}`);
       const randomImage = images[Math.floor(Math.random() * images.length)];
       let randomLeft = (Math.floor(Math.random() * 35)) * 30;
       let randomTop = (Math.floor(Math.random() * 35)) * 30;
@@ -117,7 +116,6 @@ export class MapGeneratorService {
             occupiedCells[cellIndex] = true;
           }
         }
-        console.log(randomImage.src)
       } else if (this.numberOfRetries > 100) {
         return { positions, occupiedCells };
       } else {

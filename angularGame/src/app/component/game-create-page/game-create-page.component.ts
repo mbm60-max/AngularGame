@@ -83,8 +83,8 @@ handleStartGame(){
       PlayerTwoHarvesterIndices: [600],
       PlayerOneNumberOfHarvesters: 1,
       PlayerTwoNumberOfHarvesters: 1,
-      PlayerOneSpice:49,
-      PlayerTwoSpice:30,
+      PlayerOneSpice:10,
+      PlayerTwoSpice:10,
     }, {
       CurrentPlayerTurn: TurnEnum.PlayerOne,
       EventCards:this.eventCardService.shufflePack(),

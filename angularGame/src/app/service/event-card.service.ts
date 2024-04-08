@@ -37,7 +37,6 @@ export class EventCardService implements OnDestroy {
       const spiceData = this.gameManager.getSpiceData();
       const turnData = this.gameManager.getTurnData();
       this.cardList =  turnData.EventCards;
-      console.log("turn data",turnData)
       const player = playerData.currentPlayer;
       const p1Pumps=playerOneData.WaterPumpIndices;
       const p2Pumps=playerTwoData.WaterPumpIndices;
@@ -106,7 +105,6 @@ export class EventCardService implements OnDestroy {
     return randomIndex;
   }
   pickRandomIndexNotOccupied(array: number[]): number {
-    console.log(array)
     if (array.length === 720) {
         throw new Error('Array contains all indices from 0 to 719');
     }
@@ -126,14 +124,12 @@ takeCard(): string {
   const card = this.cardList.shift();
   if (card) {
     const cardFunction = this.eventCardMapping[card];
-    console.log("Function is ",cardFunction)
     if (cardFunction) {
       cardFunction(); // Trigger the corresponding function from the eventCardMapping
     }
     this.cardList.push(card);
     return card;
   } else {
-    console.log(this.cardList)
     throw new Error("No more cards left.");
   }
 }
@@ -215,7 +211,6 @@ takeCard(): string {
 
   killTroop() {
     const removeIndex = this.troopIndices[this.pickRandomIndex(this.troopIndices)]
-    console.log("Remove Index",removeIndex)
     const tileState:TileUpdateState={
       src: "",
       indexTarget: removeIndex,

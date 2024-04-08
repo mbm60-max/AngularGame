@@ -35,7 +35,6 @@ constructor(private gameManagerService:GameManagerService,private movementServic
 ngOnInit(): void {
   this.toggleSubscription = this.gameManagerService.getGameStatusUpdates()
     .subscribe(value => {
-      console.log("game status update",value)
       this.endTurnDisabled = !value;
       // Do something with the updated value
     });
@@ -59,7 +58,6 @@ endGame(){
   this.router.navigate(['/home']);
 }
 leaveGame(){
-  console.log("leave game called");
   this.router.navigate(['/home']);
 }
 endTurn(){

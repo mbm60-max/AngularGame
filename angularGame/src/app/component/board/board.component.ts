@@ -59,13 +59,11 @@ export class BoardComponent implements OnInit{
     this.initialiseBoard();
     this.gameManagerService.getGameStatusUpdates()
       .subscribe(value => {
-        console.log("game status update in board",value)
         //maybe only update when value != original stored
         this.initialiseBoard();
         // Do something with the updated value
       });
     this.tileUpdateSubscription = this.tileSpawnService.getTileState().subscribe((tileState: TileUpdateState) => {
-      console.log("tile update requested")
       switch(tileState.type){
         case("Spawn Troop"):
         this.handleTroopSpawn([tileState.indexTarget],[],this.house);
@@ -88,6 +86,7 @@ export class BoardComponent implements OnInit{
         break;
       }
     this.gameManagerService.alertTurnEnd().subscribe((isEnded:boolean)=>{
+      console.log("is ended called",isEnded)
         if(isEnded){
         this.remainingMoves=0;
         const boardData = this.getDataFromBoard();
@@ -238,6 +237,7 @@ export class BoardComponent implements OnInit{
   }
 
   handleTroopSpawn(troopIndices: number[], enemyTroopIndices: number[], house: string) {
+    console.log("enemy troops",enemyTroopIndices)
     this.troopImageSrc = house === "House Harkonen" ? "./assets/harkonen.svg" : "./assets/soldier.svg";
     this.enemyTroopImageSrc = house === "House Harkonen" ? "./assets/soldier.svg" : "./assets/harkonen.svg";
   
@@ -311,7 +311,6 @@ export class BoardComponent implements OnInit{
         const combatIndices = this.combatRunnerService.searchSurroundings(newIndex,combatTrigger.defenderIndex,this.board);
         this.winnerSubscription = this.combatRunnerService.getWinner().subscribe((winner: any) => {
           // Handle the winner change here
-          console.log("troop removal called")
           this.handleTroopRemoval(winner,combatIndices.engagedTroops,combatIndices.engagedEnemies);
         });
         this.combatRunnerService.openCombatModal(this.house,combatIndices.engagedTroops.length,combatIndices.engagedEnemies.length);

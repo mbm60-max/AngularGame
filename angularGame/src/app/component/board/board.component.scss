@@ -5,9 +5,9 @@
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
-    height: 800px;
+    height: 600px;
     position:  absolute;
-    z-index:9!important;
+    z-index:10!important;
   }
   .enemy-board {
     top: 20px;
@@ -16,9 +16,9 @@
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
-    height: 800px;
+    height: 600px;
     position:  absolute;
-    z-index:8!important;
+    z-index:9!important;
   }
   
   
@@ -31,34 +31,34 @@
   
   .mountain-container {
     position: absolute; /* Position the mountain container absolutely */
-    top: 0; /* Adjust top/left position as needed */
-    left: 0;
-    z-index:7!important;
-  }
-  .sand-container {
-    top: 0;
-    left: 0;
-    display: grid;
-    grid-template-columns: repeat(36, 30px); /* Each column is 30px */
-    grid-template-rows: repeat(20, 30px); /* Each row is 30px */
-    width: 800px;
-    height: 800px;
-    position: absolute;
+    top: 20px; /* Adjust top/left position as needed */
+    left: 50px;
     z-index:5!important;
   }
-  .spice-container {
-    top: 0;
-    left: 0;
+  .sand-container {
+    top: 20px;
+    left: 50px;
     display: grid;
     grid-template-columns: repeat(36, 30px); /* Each column is 30px */
     grid-template-rows: repeat(20, 30px); /* Each row is 30px */
     width: 800px;
-    height: 800px;
+    height: 600px;
     position: absolute;
-    z-index:10!important;
+    z-index:4!important;
+  }
+  .spice-container {
+    top: 20px;
+    left: 50px;
+    display: grid;
+    grid-template-columns: repeat(36, 30px); /* Each column is 30px */
+    grid-template-rows: repeat(20, 30px); /* Each row is 30px */
+    width: 800px;
+    height: 600px;
+    position: absolute;
+    z-index:8!important;
   }
 
   .mountain-image {
     position: absolute; /* Position the mountain image absolutely */
-    z-index: 7!important;/* Set a lower z-index */
+    z-index: 5!important;/* Set a lower z-index */
   }
