@@ -17,6 +17,7 @@ import { DiceTestComponent } from '../dice-test/dice-test.component';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatButtonModule} from '@angular/material/button';
 import { Router } from '@angular/router';
+import { AuthProps, LoginService } from '../../service/loginservice.service';
 @Component({
   selector: 'app-game',
   standalone: true,
@@ -28,8 +29,16 @@ export class GameComponent implements OnDestroy,OnInit{
   lastRoll: number | null = null;
   toggleTurn: boolean=false;
   currentHouse:string="";
+  authStatus: AuthProps = {
+    email: '',
+    name: '',
+    id: '',
+    inGame: false,
+    isLoggedIn: false,
+  };
   private toggleSubscription!: Subscription;
-  constructor(private diceService: DiceService,private gameManagerService:GameManagerService,private router:Router) {
+  constructor(private diceService: DiceService,private gameManagerService:GameManagerService,private router:Router,private loginService:LoginService) {
+    this.authStatus = this.loginService.getStatus();
     this.diceService.diceRoll$.subscribe(value => {
       this.lastRoll = value;
     });
@@ -56,6 +65,10 @@ export class GameComponent implements OnDestroy,OnInit{
         // Do something with the updated value
       });
   }
+  endGame(){
+    this.gameManagerService.endGame(this.authStatus.id);
+    this.router.navigate(['/home']);
+  }
   navigate(path:string){
     switch(path){
       case 'home':
@@ -73,6 +86,9 @@ export class GameComponent implements OnDestroy,OnInit{
   ngOnDestroy(): void {
     this.toggleSubscription.unsubscribe();
     this.gameManagerService.unsubscribeFromGameUpdates();
+    if(this.gameManagerService.getCurrentPlayer().currentPlayer == "PlayerOne"){
+      this.endGame();
+    }
   }
   private subscribeToGameUpdates() {
     this.gameManagerService.subscribeToGameUpdates(this.gameManagerService.getGameCode())
