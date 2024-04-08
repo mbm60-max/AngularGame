@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import {PostgrestResponse, PostgrestSingleResponse, SupabaseClient,createClient} from '@supabase/supabase-js';
+import { environment } from '../../environments/environment'
 import { MountainPosition } from './map-generator.service';
 
 export interface MountainObject{
@@ -47,12 +48,7 @@ export class SupabaseService {
   private supabase:SupabaseClient;
 
   constructor() { 
-    const supabaseUrl = process.env['SUPABASE_URL'];
-    const supabaseKey = process.env['SUPABASE_KEY'];
-    if (!supabaseUrl || !supabaseKey) {
-      throw new Error('SUPABASE_URL or SUPABASE_KEY environment variable is not defined.');
-    }
-    this.supabase = createClient(supabaseUrl, supabaseKey);
+    this.supabase =  createClient(environment.supabase.url,environment.supabase.key)
   }
   signUp(email:string,password:string){
     return this.supabase.auth.signUp({email,password});
